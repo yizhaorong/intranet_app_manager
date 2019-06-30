@@ -1,0 +1,41 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'org.yzr'
+version = '1.0.0'
+sourceCompatibility = '1.8'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    compile group: 'com.googlecode.plist', name: 'dd-plist', version: '1.21'
+    compile group: 'net.dongliu', name: 'apk-parser', version: '2.6.9'
+    compile group: 'net.glxn.qrgen', name: 'javase', version: '2.0'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'com.jcraft', name: 'jzlib', version: '1.1.3'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.28'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

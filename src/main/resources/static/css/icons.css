@@ -1,0 +1,459 @@
+@font-face {
+    font-family: partner;
+    src: url(./fonts/ipartner.eot?rkodm6);
+    src: url(./fonts/ipartner.eot?rkodm6#iefix) format("embedded-opentype"), url(./fonts/ipartner.ttf?rkodm6) format("truetype"), url(./fonts/ipartner.woff?rkodm6) format("woff"), url(./fonts/ipartner.svg?rkodm6#ipartner) format("svg");
+    font-weight: 400;
+    font-style: normal
+}
+
+[class*=" ipartner-"], [class^=ipartner-] {
+    font-family: partner!important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.ipartner-swift:before {
+    content: "\e900"
+}
+
+.ipartner-qingcloud:before {
+    content: "\e902"
+}
+
+.ipartner-devlink:before {
+    content: "\e920"
+}
+
+.ipartner-logo-pingxx:before {
+    content: "\e921"
+}
+
+.ipartner-logo-qiniu:before {
+    content: "\e922"
+}
+
+.ipartner-logo-leancloud:before {
+    content: "\e923"
+}
+
+.ipartner-logo-flowci:before {
+    content: "\e924"
+}
+
+.ipartner-deveco:before {
+    content: "\e925"
+}
+
+.ipartner-wilddog:before {
+    content: "\e926"
+}
+
+.ipartner-xitu:before {
+    content: "\e927"
+}
+
+.ipartner-36kr:before {
+    content: "\e928"
+}
+
+@font-face {
+    font-family: icomoon;
+    src: url(./fonts/icomoon.eot?wcusdg);
+    src: url(./fonts/icomoon.eot?wcusdg#iefix) format("embedded-opentype"), url(./fonts/icomoon.ttf?wcusdg) format("truetype"), url(./fonts/icomoon.woff?wcusdg) format("woff"), url(./fonts/icomoon.svg?wcusdg#icomoon) format("svg");
+    font-weight: 400;
+    font-style: normal
+}
+
+[class*=" icon-"], [class^=icon-] {
+    font-family: icomoon!important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.icon-cake:before {
+    content: "\e900"
+}
+
+.icon-weibo:before {
+    content: "\e600"
+}
+
+.icon-wechat:before {
+    content: "\e601"
+}
+
+.icon-firim:before {
+    content: "\e602"
+}
+
+.icon-bug:before {
+    content: "\e603"
+}
+
+.icon-ion:before {
+    content: "\e604"
+}
+
+.icon-angle-right:before {
+    content: "\e606"
+}
+
+.icon-cloud-download:before {
+    content: "\e607"
+}
+
+.icon-question:before {
+    content: "\e608"
+}
+
+.icon-optimize-upload:before {
+    content: "\e609"
+}
+
+.icon-console:before {
+    content: "\e60a"
+}
+
+.icon-microscope:before {
+    content: "\e60b"
+}
+
+.icon-user-access:before {
+    content: "\e60c"
+}
+
+.icon-logo-jiecao:before {
+    content: "\e60d"
+}
+
+.icon-m:before {
+    content: "\e60e"
+}
+
+.icon-f:before {
+    content: "\e60f"
+}
+
+.icon-plugin:before {
+    content: "\e610"
+}
+
+.icon-launch:before {
+    content: "\e611"
+}
+
+.icon-brace-left:before {
+    content: "\e613"
+}
+
+.icon-logo:before {
+    content: "\e620"
+}
+
+.icon-thumbsup:before {
+    content: "\e615"
+}
+
+.icon-webhooks:before {
+    content: "\e616"
+}
+
+.icon-brace-right:before {
+    content: "\e617"
+}
+
+.icon-comma-eye:before {
+    content: "\e618"
+}
+
+.icon-mouth:before {
+    content: "\e619"
+}
+
+.icon-brace-hor:before {
+    content: "\e61a"
+}
+
+.icon-brace-right-b:before {
+    content: "\e61b"
+}
+
+.icon-brace-left-b:before {
+    content: "\e61c"
+}
+
+.icon-brace-box:before {
+    content: "\e61d"
+}
+
+.icon-menu:before {
+    content: "\e61e"
+}
+
+.icon-app:before {
+    content: "\e61f"
+}
+
+.icon-box:before {
+    content: "\e620"
+}
+
+.icon-combo:before {
+    content: "\e621"
+}
+
+.icon-device:before {
+    content: "\e622"
+}
+
+.icon-face:before {
+    content: "\e623"
+}
+
+.icon-file:before {
+    content: "\e624"
+}
+
+.icon-msg:before {
+    content: "\e625"
+}
+
+.icon-pen:before {
+    content: "\e626"
+}
+
+.icon-ipa:before {
+    content: "\e627"
+}
+
+.icon-lock2:before {
+    content: "\e628"
+}
+
+.icon-qrcode:before {
+    content: "\e629"
+}
+
+.icon-rollback:before {
+    content: "\e62a"
+}
+
+.icon-eye:before {
+    content: "\e62b"
+}
+
+.icon-plus:before {
+    content: "\e62c"
+}
+
+.icon-chart:before {
+    content: "\e62d"
+}
+
+.icon-idea:before {
+    content: "\e62e"
+}
+
+.icon-owner:before {
+    content: "\e62f"
+}
+
+.icon-search:before {
+    content: "\e630"
+}
+
+.icon-studio:before {
+    content: "\e631"
+}
+
+.icon-upload-cloud2:before {
+    content: "\e632"
+}
+
+.icon-android:before {
+    content: "\e633"
+}
+
+.icon-trash:before {
+    content: "\e634"
+}
+
+.icon-attachment:before {
+    content: "\e635"
+}
+
+.icon-apple:before {
+    content: "\e636"
+}
+
+.icon-calendar:before {
+    content: "\e637"
+}
+
+.icon-calendar2:before {
+    content: "\e638"
+}
+
+.icon-eye-close:before {
+    content: "\e639"
+}
+
+.icon-reply:before {
+    content: "\e63a"
+}
+
+.icon-email:before {
+    content: "\e63b"
+}
+
+.icon-error2:before {
+    content: "\e63c"
+}
+
+.icon-cross:before {
+    content: "\e63d"
+}
+
+.icon-user-plus:before {
+    content: "\e63e"
+}
+
+.icon-ios:before {
+    content: "\e63f"
+}
+
+.icon-filter:before {
+    content: "\e640"
+}
+
+.icon-test-speed:before {
+    content: "\e641"
+}
+
+.icon-udid:before {
+    content: "\e642"
+}
+
+.icon-update:before {
+    content: "\e643"
+}
+
+.icon-comma:before {
+    content: "\e644"
+}
+
+.icon-i:before {
+    content: "\e645"
+}
+
+.icon-r:before {
+    content: "\e646"
+}
+
+.icon-f-dot:before {
+    content: "\e647"
+}
+
+.icon-layers:before {
+    content: "\e648"
+}
+
+.icon-news:before {
+    content: "\e649"
+}
+
+.icon-percent:before {
+    content: "\e64a"
+}
+
+.icon-bughd:before {
+    content: "\e64b"
+}
+
+.icon-incode:before {
+    content: "\e64c"
+}
+
+.icon-message:before {
+    content: "\e64d"
+}
+
+.icon-eclipse:before {
+    content: "\e64e"
+}
+
+.icon-turkey:before {
+    content: "\e901"
+}
+
+.icon-jenkins:before {
+    content: "\e902"
+}
+
+.icon-gradle:before {
+    content: "\e903"
+}
+
+.icon-statistics:before {
+    content: "\e904"
+}
+
+.icon-done:before {
+    content: "\e905"
+}
+
+.icon-qiniu:before {
+    content: "\e906"
+}
+
+.icon-logo-leancloud:before {
+    content: "\e907"
+}
+
+.icon-logo-jd:before {
+    content: "\e908"
+}
+
+.icon-logo-xiachufang:before {
+    content: "\e909"
+}
+
+.icon-logo-ebaoyang:before {
+    content: "\e90a"
+}
+
+.icon-logo-jumei:before {
+    content: "\e90b"
+}
+
+.icon-cart:before {
+    content: "\e90c"
+}
+
+.icon-users:before {
+    content: "\e90d"
+}
+
+.icon-spinner3:before {
+    content: "\e97c"
+}
+
+.icon-infinite:before {
+    content: "\ea2f"
+}
+
+.icon-spinner:before {
+    content: "\f110"
+}

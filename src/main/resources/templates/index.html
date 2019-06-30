@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+
+    <title>应用列表</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
+    <link rel="stylesheet" th:href="@{/css/icons.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/manage.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+
+    <script type="text/javascript" th:src="@{/js/jquery-1.11.0.min.js}"></script>
+</head>
+
+<body class="ng-scope">
+    <nav class="navbar navbar-transparent fade-out navbar-black" role="navigation">
+        <div class="navbar-header"><a class="navbar-brand" href="/apps"><i class="icon-logo"></i> </a></div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse ng-scope" ng-controller="NavbarController">
+            <div class="dropdown">
+                <div></div>
+            </div>
+        </div>
+    </nav>
+    <div class="menu-toggle fade-out"><i class="icon-menu"></i></div>
+    <div class="navbar-wrapper ng-scope">
+        <div ng-controller="NavbarController" class="ng-scope">
+            <div class="navbar-header-wrap">
+                <div class="middle-wrapper">
+                    <nav>
+                        <h1 class="navbar-title logo">
+                            <i class="icon-logo"></i>
+                        </h1>
+                        <i class="icon-angle-right"></i>
+                        <div class="navbar-title primary-title">
+                            <a class="ng-binding" th:href="${baseURL} + 'apps'">我的应用</a>
+                        </div>
+                        <i class="icon-angle-right ng-hide"></i>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div><!-- ngInclude: '/templates_manage/upload_modal.html' -->
+    <section data-ui-view="" class="ng-scope" style="">
+        <div class="page-apps ng-scope">
+            <div class="middle-wrapper">
+            </div><!-- ngIf: !appsReady -->
+            <div class="middle-wrapper container-fluid" ng-show="appsReady">
+                <div class="apps row">
+                    <upload-card id="uploadCard" class="components-upload-card col-xs-4 col-sm-4 col-md-4 app-animator" >
+                        <div class="card text-center">
+                            <div class="dashed-space">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <i class="icon-upload-cloud2"></i>
+                                                <div class="text drag-state">
+                                                    <span id="upload-progress" translate="DRAG_TO_UPLOAD" class="ng-scope">拖拽到这里上传</span>
+                                                    <span translate="DROP_TO_UPLOAD" class="ng-scope">快松手</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </upload-card>
+                    <div th:each="app : ${apps}" class="col-xs-4 col-sm-4 col-md-4 app-animator ng-scope">
+                        <div th:class="'card app '  + @{'card-' + ${app.platform}}">
+                            <i th:class="'type-icon '  + @{'icon-' + ${app.platform}}"></i>
+                            <div class="type-mark"></div>
+                            <a class="appicon" th:href="'/apps/' + ${app.id}" target="_blank">
+                                <img class="icon ng-isolate-scope" width="100" height="100" th:src="@{'/' + ${app.icon}}" />
+                            </a>
+                            <!-- ngIf: app.has_combo --><br>
+                            <p class="appname" th:data="@{${baseURL} + 'apps/' + ${app.id}}">
+                                <i class="icon-owner"></i>
+                                <span class="ng-binding">[[${app.name}]]</span></p>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="ng-binding">短链接:</td>
+                                        <td><span class="ng-binding">[[${baseURL}]]s/[[${app.shortCode}]]</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ng-binding">包名:</td>
+                                        <td>
+                                            <span title="com.mistong.ewt360" class="ng-binding">[[${app.bundleID}]]</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ng-binding">版本:</td>
+                                        <td>
+                                            <span class="ng-binding">[[${app.version}]] ( Build [[${app.buildVersion}]] )</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="action">
+                                <a class="ng-binding" th:href="'/apps/' + ${app.id}">
+                                    <i class="icon-pen"></i> 编辑</a>
+                                <a th:href="@{${baseURL}+'s/'+${app.shortCode}}" target="_blank" class="ng-binding">
+                                    <i class="icon-eye"></i> 预览</a>
+                                <button class="btn btn-remove ng-scope" th:data="${app.id}">
+                                    <i class="icon icon-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div alert-bar="" class="alert-bar ng-hide" ng-show="anyErrors">
+        <div class="action" ng-click="close()"></div>
+        <div class="inner">
+            <p ng-bind="errors" class="ng-binding"></p>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var dashboard = document.getElementById("uploadCard")
+        dashboard.addEventListener("dragover", function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+        })
+        dashboard.addEventListener("dragenter", function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+        })
+        dashboard.addEventListener("drop", function (e) {
+            // 必须要禁用浏览器默认事件
+            e.preventDefault()
+            e.stopPropagation()
+            var files = this.files || e.dataTransfer.files
+            var file = files[0]
+            //上传
+            var xhr = new XMLHttpRequest();
+            xhr.open("post", "/app/upload", true);
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            // 获取上传进度
+            xhr.upload.onprogress = function (event) {
+                if (event.lengthComputable) {
+                    var percent = Math.floor(event.loaded / event.total * 100);
+                    var uploadText = "拖拽到这里上传"
+                    var uploadElement = document.getElementById("upload-progress")
+                    if (percent < 100) {
+                        uploadElement.innerText="正在上传:" + percent + "%"
+                    } else {
+                        uploadElement.innerText=uploadText
+                    }
+                }
+            };
+            // 上传完成
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    window.location.href=window.location.href
+                    window.location.reload
+                }
+            }
+            var fd = new FormData();
+            fd.append('file', file);
+            xhr.send(fd);
+        })
+
+        $(".btn-remove").click(function () {
+            var url = "/app/delete/" + $(this).attr("data");
+            $.ajax({url:url,success:function(result){
+                    window.location.href=window.location.href
+                    window.location.reload
+                }
+            });
+        });
+        $(".appname").click(function () {
+            window.open($(this).attr("data"))
+        });
+    </script>
+</body>
+
+</html>

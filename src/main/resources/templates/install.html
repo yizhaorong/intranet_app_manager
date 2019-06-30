@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="x-ua-compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="minimal-ui,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
+  <link rel="stylesheet" th:href="@{/css/download.css}">
+  <script type="text/javascript" th:src="@{/js/qrcode.js}"></script>
+  <script type="text/javascript" th:src="@{/js/jquery-1.11.0.min.js}"></script>
+  <title>[[${app.name}]]</title>
+</head>
+
+<body class="app">
+  <div class="masklayer" id="MaskLayer" style="display:none"></div>
+  <span class="pattern left">
+    <img th:src="@{/images/download_pattern_left.png}" />
+  </span>
+  <span class="pattern right">
+    <img th:src="@{/images/download_pattern_right.png}" />
+  </span>
+  <div class="wechat_tip_content"></div>
+  <div class="out-container">
+    <div class="main">
+      <header itemscope="" itemtype="http://schema.org/SoftwareApplication">
+        <div class="table-container">
+          <div class="cell-container">
+            <div class="app-brief">
+              <div class="icon-container wrapper">
+                <i class="icon-icon_path bg-path"></i>
+                <span class="icon">
+                  <img th:src="@{'/' + ${app.icon}}" itemprop="image">
+                </span>
+                <span class="qrcode" id="qrcode" th:data="${app.currentPackage.previewURL}">
+                </span>
+              </div>
+
+              <p class="release-type wrapper">内测版</p>
+
+              <h1 class="name wrapper">
+                <span class="icon-warp">
+                  <i th:class="'icon-'+ ${app.platform}"></i>
+                  [[${app.name}]]
+                </span>
+
+              </h1>
+              <p class="scan-tips">扫描二维码下载<br>或用手机浏览器输入这个网址:&nbsp;&nbsp;<span
+                  class="text-black">[[${app.installPath}]]</span></p>
+              <div class="release-info">
+                <p>内测版 -
+                  <span itemprop="softwareVersion">[[${app.version}]] (Build [[${app.buildVersion}]]) -
+                    [[${app.currentPackage.displaySize}]]</span></p>
+                <p>更新于: <span itemprop="datePublished">[[${app.currentPackage.displayTime}]]</span></p>
+              </div>
+              <div class="action-animate">
+                <input id="installURL" th:value="${app.currentPackage.installURL}" style="display: none" />
+                <div class="action-animate-text" id="install">下载安装</div>
+                <div class="action-animate-active"></div>
+              </div>
+              <div class="action-animate">
+                <input id="crtURL" th:value="${ca_path}" style="display: none"/>
+                <div class="action-animate-text" id="installCRT">安装证书</div>
+                <div class="action-animate-active"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </header>
+      <!-- Release list -->
+    </div>
+  </div>
+  <script type="application/javascript">
+    $("#install").click(function () {
+      window.location.href = ($("#installURL").val())
+    })
+
+    $("#installCRT").click(function () {
+      window.open($("#crtURL").val())
+    })
+
+    var codeData = $("#qrcode").attr("data");
+    new QRCode("qrcode", {
+      text: codeData,
+      width: 200,
+      height: 200,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.L
+    });
+
+  </script>
+</body>
+
+</html>

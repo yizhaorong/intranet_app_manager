@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Stict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="x-ua-compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+
+  <title class="ng-binding">[[${package.name}]] - 应用动态</title>
+  <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
+  <link rel="stylesheet" th:href="@{/css/icons.css}">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+  <link rel="stylesheet" th:href="@{/css/manage.css}">
+  <link rel="stylesheet" th:href="@{/css/index.css}">
+  <script type="text/javascript" th:src="@{/js/jquery-1.11.0.min.js}"></script>
+</head>
+
+<body class="ng-scope">
+  <nav class="navbar navbar-transparent fade-out navbar-black">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/apps"><i class="icon-logo"></i> </a>
+    </div>
+    <div class="collapse navbar-collapse navbar-ex1-collapse ng-scope">
+      <div class="dropdown">
+        <div></div>
+      </div>
+    </div>
+  </nav>
+  <div class="menu-toggle fade-out"><i class="icon-menu"></i></div>
+  <div class="navbar-wrapper ng-scope">
+    <div ng-controller="NavbarController" class="ng-scope">
+      <div class="navbar-header-wrap">
+        <div class="middle-wrapper">
+          <nav>
+            <h1 class="navbar-title logo">
+              <i class="icon-logo"></i>
+            </h1>
+            <i class="icon-angle-right"></i>
+            <div class="navbar-title primary-title">
+              <a class="ng-binding" href="/apps">我的应用</a>
+            </div>
+            <i class="icon-angle-right"></i>
+            <div class="navbar-title secondary-title ng-binding"
+              style="">[[${package.name}]]</div>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div><!-- ngInclude: '/templates_manage/upload_modal.html' -->
+  <section data-ui-view="" class="ng-scope" style="">
+    <div class="page-app app-activities">
+      <div class="banner has-devices">
+        <div class="middle-wrapper clearfix">
+          <div class="pull-left icon-container appicon">
+            <img th:src="'/' + ${package.icon}" width="100" height="100" class="change_icon ng-isolate-scope"/>
+          </div>
+          <div class="badges">
+            <span tooltip-top="" tooltip="复制到剪贴板" id="js-app-short-copy-trigger"
+              class="short tooltip-top ng-binding ng-isolate-scope" th:value="${package.installPath}"
+              copy-trigger="">[[${package.installPath}]]</span>
+            <span class="apptype ng-binding" th:if="${#strings.containsIgnoreCase(package.platform,'ios')}">iOS</span>
+            <span class="apptype ng-binding" th:if="${#strings.containsIgnoreCase(package.platform,'android')}">Android</span>
+            <span class="bundleid ng-binding">BundleID<b class="ng-binding">&nbsp;&nbsp;[[${package.bundleID}]]</b></span>
+            <span class="version ng-scope" th:if="${#strings.containsIgnoreCase(package.platform,'ios')}" >iOS&nbsp;[[${package.minVersion}]]&nbsp;或者高版本</span>
+          </div>
+          <div class="actions">
+            <a class="download ng-binding"th:href="${package.installPath}" target="_blank">
+              <i class="icon-eye"></i>
+              预览
+            </a>
+          </div>
+          <div class="tabs-container">
+            <ul class="list-inline">
+              <li>
+                <a class="ng-binding"><i class="icon-file"></i> 基本信息</a></li>
+              <li>
+                <a class="ng-binding"><i class="icon-device"></i> 设备列表</a></li>
+            </ul>
+          </div>
+        </div>
+      </div><!-- uiView:  -->
+      <div data-ui-view="" class="ng-scope">
+        <div class="page-app-activities page-tabcontent ng-scope">
+          <!-- ngIf: !activitiesReady -->
+          <div class="middle-wrapper" ng-show="activitiesReady">
+            <ul class="list-unstyled time-line">
+              <li>
+                <span class="dot"></span>
+                <span class="filter ng-binding">版本更新</span>
+                <span class="filter version-rollback ng-scope"></span>
+              </li>
+              <li>
+                <div class="market-app-info">
+                </div>
+              </li>
+              <li th:each="app,appStat : ${apps}">
+                <div>
+                  <div class="directive-view-release">
+                    <i class="icon-upload-cloud2"></i>
+                    <b class="ng-binding">[[${app.version}]] (Build [[${app.buildVersion}]])</b>
+                    <div class="release-metainfo ng-hide">
+                      <small>
+                        <i class="icon-calendar"></i>
+                        <span class="ng-binding">[[${app.displayTime}]]</span>
+                      </small>
+                    </div>
+                    <div class="release-metainfo">
+                      <small>
+                        <i class="icon-calendar"></i>
+                        <span class="ng-binding">[[${app.displayTime}]]</span></small> &nbsp;&nbsp;·&nbsp;&nbsp;
+                      <small class="ng-scope">内测版</small>
+                      <i class="ng-hide">&nbsp;&nbsp;·&nbsp;&nbsp;</i>
+                      <small class="ng-binding ng-hide"></small>
+                    </div>
+                    <div class="release-actions">
+                      <button class="tooltip-top download-action" tooltip="下载原文件" th:value="${app.downloadURL}">
+                        <i class="icon-cloud-download"></i>
+                        <span class="ng-binding">[[${app.displaySize}]]</span>
+                      </button>
+                      <button class="preview" th:value="${app.previewURL}">
+                        <i class="icon-eye"></i>
+                        <span class="ng-binding">预览</span>
+                      </button>
+                      <button class="ng-scope app-delete" th:data="${app.id}" th:if="${appStat.index > 0}">
+                        <i class="icon-trash"></i>
+                        <span class="ng-binding">删除</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="more ng-hide" ng-show="currentApp.releases.current_page &lt; currentApp.releases.total_pages">
+                <button ng-click="moreRelease()" class="ng-binding">显示更多版本</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script type="application/javascript">
+    $(".download-action").click(function(){
+      window.open($(this).val())
+    })
+    
+    $(".preview").click(function () {
+      window.open($(this).val())
+    })
+
+
+    $(".app-delete").click(function () {
+      var url = "/p/delete/" + $(this).attr("data");
+      $.ajax({url:url,success:function(result){
+          window.location.href=window.location.href
+          window.location.reload
+        }
+      });
+    })
+  </script>
+</body>
+
+</html>
