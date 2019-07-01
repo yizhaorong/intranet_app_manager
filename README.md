@@ -33,7 +33,7 @@ mysql -u root -p
 
 ```shell
 # 创建库
-create database app_manager;
+create database app_manager DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 ```
 
 ##### HTTPS 证书
@@ -56,7 +56,7 @@ create database app_manager;
 
 #### 部署
 
-本项目使用的是 80 和 443 端口，确保端口未被占用。
+本项目使用的是 80 和 443 端口，确保端口未被占用。可以配置文件中更改为别的端口。
 
 > 启动服务
 

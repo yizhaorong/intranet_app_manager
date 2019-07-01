@@ -182,7 +182,7 @@ public class PackageController {
             // 生成文件名
             String newFileName = UUID.randomUUID().toString() + "." + ext;
             // 转存到 tmp
-            String destPath = FileUtils.getTempDirectory() + newFileName;
+            String destPath = FileUtils.getTempDirectoryPath() + File.separator + newFileName;
             srcFile.transferTo(new File(destPath));
             return destPath;
         } catch (Exception e) {

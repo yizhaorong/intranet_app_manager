@@ -46,7 +46,7 @@ public class PathManager {
             }
             int httpPort = Integer.parseInt(environment.getProperty("server.http.port"));
             int httpsPort = Integer.parseInt(environment.getProperty("server.port"));
-            int port = isHttps ? httpPort : httpsPort;
+            int port = isHttps ? httpsPort : httpPort;
             String protocol = isHttps ? "https" : "http";
             String portString = ":" + port;
             if (port == 80 || port == 443) {
@@ -88,7 +88,7 @@ public class PathManager {
     public static String getTempIconPath(Package aPackage) {
         if (aPackage == null) return null;
         StringBuilder path = new StringBuilder();
-        path.append(FileUtils.getTempDirectoryPath()).append(aPackage.getPlatform());
+        path.append(FileUtils.getTempDirectoryPath()).append(File.separator).append(aPackage.getPlatform());
         path.append(File.separator).append(aPackage.getBundleID());
         // 如果目录不存在，创建目录
         File dir = new File(path.toString());
