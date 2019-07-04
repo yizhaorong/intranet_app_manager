@@ -49,6 +49,19 @@ public class PackageController {
     }
 
     /**
+     * 设备列表
+     * @param id
+     * @param request
+     * @return
+     */
+    @GetMapping("/devices/{id}")
+    public String devices(@PathVariable("id") String id, HttpServletRequest request) {
+        PackageViewModel viewModel= this.packageService.findById(id);
+        request.setAttribute("app", viewModel);
+        return "devices";
+    }
+
+    /**
      * 上传包
      * @param file
      * @param request

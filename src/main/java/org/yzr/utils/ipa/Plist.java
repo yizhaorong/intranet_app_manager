@@ -1,9 +1,6 @@
 package org.yzr.utils.ipa;
 
-import com.dd.plist.NSArray;
-import com.dd.plist.NSDictionary;
-import com.dd.plist.NSObject;
-import com.dd.plist.PropertyListParser;
+import com.dd.plist.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,18 +78,26 @@ public class Plist {
     }
 
     public List<String> arrayValueForPath(String path) {
+        List<String> devices = new ArrayList<>();
         Object object = valueForKeyPath(path);
         if (object != null) {
             NSArray deviceArray = (NSArray)object;
-            List<String> devices = new ArrayList<>();
             if (deviceArray != null && deviceArray.count() > 0) {
                 for (int i = 0; i < deviceArray.count(); i++) {
                     devices.add(deviceArray.objectAtIndex(i).toString());
                 }
             }
-            return devices;
         }
-        return null;
+        return devices;
+    }
+
+    public boolean boolValueForPath(String keyPath) {
+        Object object = valueForKeyPath(keyPath);
+        if (object instanceof NSNumber) {
+            NSNumber number = (NSNumber)object;
+            return number.boolValue();
+        }
+        return false;
     }
 }
 

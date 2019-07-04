@@ -1,11 +1,9 @@
 package org.yzr.model;
 
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 
@@ -41,5 +39,9 @@ public class Package {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name="appId")
     private App app;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // Provision 文件
+    @JoinColumn(name = "provisionId",referencedColumnName = "id")
+    private  Provision provision;
 
 }

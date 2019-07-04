@@ -6,7 +6,10 @@ import org.yzr.model.Package;
 import org.yzr.utils.PathManager;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -25,6 +28,9 @@ public class PackageViewModel {
     private String displaySize;
     private String displayTime;
     private boolean iOS;
+    private String type;
+    private List<String> devices;
+    private int deviceCount;
 
     public PackageViewModel(Package aPackage, PathManager pathManager) {
         this.downloadURL = pathManager.getBaseURL(false) + "p/" + aPackage.getId();
@@ -51,6 +57,27 @@ public class PackageViewModel {
             this.installURL = pathManager.getPackageResourceURL(aPackage, false) + aPackage.getFileName();
         }
         this.previewURL = pathManager.getBaseURL(false) + "s/" + aPackage.getApp().getShortCode() + "?id=" + aPackage.getId();
+        if (this.isIOS()) {
+            if (aPackage.getProvision() == null) {
+                this.type = "内测版";
+            } else {
+                if (aPackage.getProvision().isEnterprise()) {
+                    this.type = "企业版";
+                } else  {
+                    if ("AdHoc".equalsIgnoreCase(aPackage.getProvision().getType())) {
+                        this.type = "内测版";
+                    } else {
+                        this.type = "商店版";
+                    }
+                    this.deviceCount = aPackage.getProvision().getDeviceCount();
+                    if (aPackage.getProvision().getDeviceCount() > 0) {
+                        this.devices = Arrays.asList(aPackage.getProvision().getDevices());
+                    }
+                }
+            }
+        } else {
+            this.type = "内测版";
+        }
     }
 
 }
