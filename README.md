@@ -13,6 +13,12 @@
 
 ![首页](images/install.jpg)
 
+![首页](images/mobile_install.jpg)
+
+##### 证书信任设置
+
+![首页](images/install_crt.gif)
+
 #### 安装教程
 
 项目使用 JAVA 开发，需要 JDK 1.8 运行环境，数据库使用的是 Mysql，需要安装 Mysql。JDK 安装直接找网上教程。
