@@ -45,6 +45,7 @@ public class PackageController {
         AppViewModel viewModel = this.appService.findByCode(code, id);
         request.setAttribute("app", viewModel);
         request.setAttribute("ca_path", this.pathManager.getCAPath());
+        request.setAttribute("basePath", this.pathManager.getBaseURL(false));
         return "install";
     }
 
@@ -59,6 +60,18 @@ public class PackageController {
         PackageViewModel viewModel= this.packageService.findById(id);
         request.setAttribute("app", viewModel);
         return "devices";
+    }
+
+    /**
+     * 安装教程
+     * @param platform
+     * @param request
+     * @return
+     */
+    @GetMapping("/guide/{platform}")
+    public String guide(@PathVariable("platform") String platform, HttpServletRequest request) {
+        request.setAttribute("platform", platform);
+        return "guide";
     }
 
     /**

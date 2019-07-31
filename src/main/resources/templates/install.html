@@ -64,13 +64,19 @@
                 <div class="action-animate-text" id="install">下载安装</div>
                 <div class="action-animate-active"></div>
               </div>
-              <div class="action-animate">
+              <div class="action-animate" th:if="${#strings.containsIgnoreCase(app.platform,'ios')}">
                 <input id="crtURL" th:value="${ca_path}" style="display: none"/>
                 <div class="action-animate-text" id="installCRT">安装证书</div>
                 <div class="action-animate-active"></div>
               </div>
               <div class="action-animate" th:if="${app.currentPackage.deviceCount > 0}">
-                <a th:href="'/devices/' + ${app.currentPackage.id}" class="action-animate-text ng-binding" target="_blank">查看设备列表</a>
+                <input id="devices" th:value="${basePath} + 'devices/' + ${app.currentPackage.id}" style="display: none"/>
+                <div class="action-animate-text" id="showDevices">查看设备列表</div>
+                <div class="action-animate-active"></div>
+              </div>
+              <div class="action-animate" th:if="${#strings.containsIgnoreCase(app.platform,'ios')}">
+                <input id="trust_crt" th:value="${basePath} + 'guide/ios'" style="display: none"/>
+                <div class="action-animate-text" id="trustCTR">证书信任教程</div>
                 <div class="action-animate-active"></div>
               </div>
             </div>
@@ -88,6 +94,14 @@
 
     $("#installCRT").click(function () {
       window.open($("#crtURL").val())
+    })
+
+    $("#showDevices").click(function () {
+      window.open($("#devices").val())
+    })
+
+    $("#trustCTR").click(function () {
+      window.open($("#trust_crt").val())
     })
 
     var codeData = $("#qrcode").attr("data");
