@@ -54,6 +54,14 @@ public class PathManager {
             }
 
             String baseURL = protocol + "://" + domain + portString + "/";
+
+            //解决重复读配置文件
+            if (isHttps) {
+                httpsBaseURL = baseURL;
+            } else {
+                httpBaseURL = baseURL;
+            }
+
             return baseURL;
         } catch (Exception e) {
             e.printStackTrace();
