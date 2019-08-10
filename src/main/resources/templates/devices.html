@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="minimal-ui,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+
+    <title>[[${app.name}]]-设备列表</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+</head>
+<body>
+    <div class="card container">
+        <div class="list-group text-center">
+            <a href="#" class="list-group-item active">
+                <h4 class="list-group-item-heading">
+                    设备ID
+                </h4>
+            </a>
+            <a class="list-group-item" href="#" th:each="device,appStat : ${app.devices}">
+                [[${device}]]
+            </a>
+        </div>
+    </div>
+</body>
+</html>

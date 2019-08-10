@@ -45,7 +45,33 @@ public class PackageController {
         AppViewModel viewModel = this.appService.findByCode(code, id);
         request.setAttribute("app", viewModel);
         request.setAttribute("ca_path", this.pathManager.getCAPath());
+        request.setAttribute("basePath", this.pathManager.getBaseURL(false));
         return "install";
+    }
+
+    /**
+     * 设备列表
+     * @param id
+     * @param request
+     * @return
+     */
+    @GetMapping("/devices/{id}")
+    public String devices(@PathVariable("id") String id, HttpServletRequest request) {
+        PackageViewModel viewModel= this.packageService.findById(id);
+        request.setAttribute("app", viewModel);
+        return "devices";
+    }
+
+    /**
+     * 安装教程
+     * @param platform
+     * @param request
+     * @return
+     */
+    @GetMapping("/guide/{platform}")
+    public String guide(@PathVariable("platform") String platform, HttpServletRequest request) {
+        request.setAttribute("platform", platform);
+        return "guide";
     }
 
     /**
@@ -182,7 +208,7 @@ public class PackageController {
             // 生成文件名
             String newFileName = UUID.randomUUID().toString() + "." + ext;
             // 转存到 tmp
-            String destPath = FileUtils.getTempDirectory() + newFileName;
+            String destPath = FileUtils.getTempDirectoryPath() + File.separator + newFileName;
             srcFile.transferTo(new File(destPath));
             return destPath;
         } catch (Exception e) {

@@ -14,7 +14,7 @@ public class ZipUtils {
     public static String unzip(String path) {
         try {
             long start = System.currentTimeMillis();
-            String destDirPath = System.getProperty("java.io.tmpdir") + start;
+            String destDirPath = FileUtils.getTempDirectoryPath() + File.separator + start;
             ZipFile zipFile = new ZipFile(path);
             Enumeration<?> entries = zipFile.entries();
             while (entries.hasMoreElements()) {

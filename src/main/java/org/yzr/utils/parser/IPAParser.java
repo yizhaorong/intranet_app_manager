@@ -1,17 +1,19 @@
 package org.yzr.utils.parser;
 
+import com.dd.plist.NSDate;
 import org.apache.commons.io.FileUtils;
 import org.yzr.model.Package;
 import org.yzr.utils.PNGConverter;
 import org.yzr.utils.PathManager;
 import org.yzr.utils.ZipUtils;
 import org.yzr.utils.ipa.Plist;
-import org.yzr.utils.ipa.Provision;
+import org.yzr.model.Provision;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class IPAParser implements PackageParser {
@@ -49,7 +51,7 @@ public class IPAParser implements PackageParser {
             PNGConverter.convert(iconPath, iconTempPath);
 
             // 解析 Provision
-            Provision provision = new Provision(appPath);
+            aPackage.setProvision(getProvision(appPath));
 
             // 清除目录
             FileUtils.deleteDirectory(new File(targetPath));
@@ -99,5 +101,45 @@ public class IPAParser implements PackageParser {
             return appPath + File.separator + iconNames.get(iconNames.size() - 1);
         }
         return null;
+    }
+
+    private static Provision getProvision(String appPath) {
+        Provision provision = new Provision();
+        String profile = appPath + File.separator + "embedded.mobileprovision";
+        try {
+            boolean started = false;
+            boolean ended = false;
+            BufferedReader reader = new BufferedReader(new FileReader(profile));
+            StringBuffer plist = new StringBuffer();
+            String str = null;
+            while ((str = reader.readLine()) != null) {
+                if (str.contains("</plist>")) {
+                    ended = true;
+                    plist.append("</plist>").append("\n");
+                } else if (started && !ended) {
+                    plist.append(str).append("\n");
+                } else  if (str.contains("<?xml")) {
+                    started = true;
+                    plist.append(str.substring(str.indexOf("<?xml"))).append("\n");
+                }
+            }
+            reader.close();
+            Plist provisionFile = Plist.parseWithString(plist.toString());
+            provision.setEnterprise(provisionFile.boolValueForPath("ProvisionsAllDevices"));
+            List<String> provisionedDevices = provisionFile.arrayValueForPath("ProvisionedDevices");
+            String[] devices = new String[provisionedDevices.size()];
+            devices = provisionedDevices.toArray(devices);
+            provision.setDevices(devices);
+            provision.setDeviceCount(devices.length);
+            provision.setTeamName(provisionFile.stringValueForPath("TeamName"));
+            provision.setTeamID(provisionFile.arrayValueForPath("TeamIdentifier").get(0));
+            provision.setCreateDate(((NSDate)provisionFile.valueForKeyPath("CreationDate")).getDate());
+            provision.setExpirationDate(((NSDate)provisionFile.valueForKeyPath("ExpirationDate")).getDate());
+            provision.setUUID(provisionFile.stringValueForPath("UUID"));
+            provision.setType(provision.getDeviceCount() > 0 ? "AdHoc" : "Release");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return provision;
     }
 }

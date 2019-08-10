@@ -29,7 +29,7 @@ localityName_default=HangZhou
 organizationalUnitName=Organizational Unit Name (eg, section)
 organizationalUnitName_default=Domain Control Validated
 commonName=Internet Widgits Ltd
-commonName_default=192.168.0.*
+commonName_default=DigiCert APP Manager Root CA
 commonName_max=64
 
 [ v3_req ]

@@ -13,6 +13,12 @@
 
 ![首页](images/install.jpg)
 
+![首页](images/mobile_install.jpg)
+
+##### 证书信任设置
+
+![首页](images/install_crt.gif)
+
 #### 安装教程
 
 项目使用 JAVA 开发，需要 JDK 1.8 运行环境，数据库使用的是 Mysql，需要安装 Mysql。JDK 安装直接找网上教程。
@@ -33,7 +39,7 @@ mysql -u root -p
 
 ```shell
 # 创建库
-create database app_manager;
+create database app_manager DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 ```
 
 ##### HTTPS 证书
@@ -56,7 +62,7 @@ create database app_manager;
 
 #### 部署
 
-本项目使用的是 80 和 443 端口，确保端口未被占用。
+本项目使用的是 80 和 443 端口，确保端口未被占用。可以配置文件中更改为别的端口。
 
 > 启动服务
 
@@ -68,7 +74,11 @@ java -jar intranet_app_manager-1.0.0.jar
 
 > 上传与安装
 
-可以将 ipa 或 apk 拖入上传块中进行上传，上传完成后会在列表中展示。iOS 安装需要使用 https 协议，由于内网部署是用的自建证书，需要将 ca 添加到设备的信用列表中才可正常进行安装。
+可以将 ipa 或 apk 拖入上传块中进行上传，上传完成后会在列表中展示。
+
+**注意**
+
+本项目默认采用 http 方式访问，这样可以避免没必要的证书信任。iOS 安装需要使用 https 协议，由于内网部署是用的自建证书，需要将 ca 添加到设备的信用列表中才可正常进行安装。**设置抓包代理会影响自建证书**，导致无法下载。
 
 #### Jenkins 集成 
 

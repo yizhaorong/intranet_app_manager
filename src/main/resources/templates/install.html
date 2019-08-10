@@ -42,7 +42,7 @@
                 </span>
               </div>
 
-              <p class="release-type wrapper">内测版</p>
+              <p class="release-type wrapper">[[${app.currentPackage.type}]]</p>
 
               <h1 class="name wrapper">
                 <span class="icon-warp">
@@ -54,7 +54,7 @@
               <p class="scan-tips">扫描二维码下载<br>或用手机浏览器输入这个网址:&nbsp;&nbsp;<span
                   class="text-black">[[${app.installPath}]]</span></p>
               <div class="release-info">
-                <p>内测版 -
+                <p>[[${app.currentPackage.type}]] -
                   <span itemprop="softwareVersion">[[${app.version}]] (Build [[${app.buildVersion}]]) -
                     [[${app.currentPackage.displaySize}]]</span></p>
                 <p>更新于: <span itemprop="datePublished">[[${app.currentPackage.displayTime}]]</span></p>
@@ -64,9 +64,19 @@
                 <div class="action-animate-text" id="install">下载安装</div>
                 <div class="action-animate-active"></div>
               </div>
-              <div class="action-animate">
+              <div class="action-animate" th:if="${#strings.containsIgnoreCase(app.platform,'ios')}">
                 <input id="crtURL" th:value="${ca_path}" style="display: none"/>
                 <div class="action-animate-text" id="installCRT">安装证书</div>
+                <div class="action-animate-active"></div>
+              </div>
+              <div class="action-animate" th:if="${app.currentPackage.deviceCount > 0}">
+                <input id="devices" th:value="${basePath} + 'devices/' + ${app.currentPackage.id}" style="display: none"/>
+                <div class="action-animate-text" id="showDevices">查看设备列表</div>
+                <div class="action-animate-active"></div>
+              </div>
+              <div class="action-animate" th:if="${#strings.containsIgnoreCase(app.platform,'ios')}">
+                <input id="trust_crt" th:value="${basePath} + 'guide/ios'" style="display: none"/>
+                <div class="action-animate-text" id="trustCTR">证书信任教程</div>
                 <div class="action-animate-active"></div>
               </div>
             </div>
@@ -84,6 +94,14 @@
 
     $("#installCRT").click(function () {
       window.open($("#crtURL").val())
+    })
+
+    $("#showDevices").click(function () {
+      window.open($("#devices").val())
+    })
+
+    $("#trustCTR").click(function () {
+      window.open($("#trust_crt").val())
     })
 
     var codeData = $("#qrcode").attr("data");

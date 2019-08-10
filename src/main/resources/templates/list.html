@@ -8,11 +8,10 @@
 
   <title class="ng-binding">[[${package.name}]] - 应用动态</title>
   <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
-  <link rel="stylesheet" th:href="@{/css/icons.css}">
   <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-  <link rel="stylesheet" th:href="@{/css/manage.css}">
   <link rel="stylesheet" th:href="@{/css/index.css}">
   <script type="text/javascript" th:src="@{/js/jquery-1.11.0.min.js}"></script>
+  <script type="text/javascript" th:src="@{/js/clipboard.min.js}"></script>
 </head>
 
 <body class="ng-scope">
@@ -108,7 +107,7 @@
                       <small>
                         <i class="icon-calendar"></i>
                         <span class="ng-binding">[[${app.displayTime}]]</span></small> &nbsp;&nbsp;·&nbsp;&nbsp;
-                      <small class="ng-scope">内测版</small>
+                      <small class="ng-scope">[[${app.type}]]</small>
                       <i class="ng-hide">&nbsp;&nbsp;·&nbsp;&nbsp;</i>
                       <small class="ng-binding ng-hide"></small>
                     </div>
@@ -155,6 +154,14 @@
         }
       });
     })
+
+    $("#js-app-short-copy-trigger").click(function(){
+      new ClipboardJS('#js-app-short-copy-trigger', {
+        text: function(trigger) {
+          return trigger.getAttribute('value');
+        }
+      });
+    });
   </script>
 </body>
 
