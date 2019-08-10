@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class WebHookViewModel {
+    private String id;
 
     private String appId;
 

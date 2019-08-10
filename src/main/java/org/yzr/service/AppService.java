@@ -30,6 +30,12 @@ public class AppService {
     public App save(App app) {
         App app1 = this.appDao.save(app);
         app1.getCurrentPackage();
+        try {
+            // 触发级联查询
+            app1.getWebHookList().forEach(webHook -> {});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return app1;
     }
 
@@ -71,6 +77,7 @@ public class AppService {
             app.setName(aPackage.getName());
             // 触发级联查询
             app.getPackageList().forEach(p->{});
+            app.getWebHookList().forEach(webHook -> {});
         }
         if (app.getPackageList() == null) {
             app.setPackageList(new ArrayList<>());

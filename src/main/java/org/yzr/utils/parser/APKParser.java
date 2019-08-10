@@ -22,8 +22,16 @@ public class APKParser implements PackageParser {
             aPackage.setSize(file.length());
             ApkMeta meta = apkFile.getApkMeta();
             aPackage.setName(meta.getName());
-            aPackage.setVersion(meta.getPlatformBuildVersionName());
-            aPackage.setBuildVersion(meta.getPlatformBuildVersionCode());
+            String version = meta.getVersionName();
+            String buildVersion = meta.getVersionCode() + "";
+            if (version.length() < 1) {
+                version = meta.getPlatformBuildVersionName();
+            }
+            if (buildVersion.length() < 1) {
+                buildVersion = meta.getPlatformBuildVersionCode();
+            }
+            aPackage.setVersion(version);
+            aPackage.setBuildVersion(buildVersion);
             aPackage.setBundleID(meta.getPackageName());
             aPackage.setMinVersion(meta.getMinSdkVersion());
             aPackage.setPlatform("android");

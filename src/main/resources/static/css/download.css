@@ -1,1 +1,519 @@
-@charset "UTF-8";*{box-sizing:border-box}@font-face{font-weight:300;font-style:normal;font-family:roboto slab;src:local('Roboto Slab Light'),local('RobotoSlab-Light');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2212,U+2215,U+E0FF,U+EFFD,U+F000;font-weight:400;font-style:normal;font-family:roboto slab;src:local('Roboto Slab Regular'),local('RobotoSlab-Regular');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2212,U+2215,U+E0FF,U+EFFD,U+F000;font-weight:700;font-style:normal;font-family:roboto slab;src:local('Roboto Slab Bold'),local('RobotoSlab-Bold');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2212,U+2215,U+E0FF,U+EFFD,U+F000;font-family:open sans;font-style:normal;font-weight:300;src:local('Open Sans Light'),local('OpenSans-Light');unicode-range:U+0460-052F,U+20B4,U+2DE0-2DFF,U+A640-A69F;font-family:open sans;font-style:normal;font-weight:300;src:local('Open Sans Light'),local('OpenSans-Light');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-family:open sans;font-style:normal;font-weight:300;src:local('Open Sans Light'),local('OpenSans-Light');unicode-range:U+1F00-1FFF;font-family:open sans;font-style:normal;font-weight:300;src:local('Open Sans Light'),local('OpenSans-Light');unicode-range:U+0370-03FF;font-family:open sans;font-style:normal;font-weight:300;src:local('Open Sans Light'),local('OpenSans-Light');unicode-range:U+0102-0103,U+1EA0-1EF1,U+20AB;font-family:open sans;font-style:normal;font-weight:300;src:local('Open Sans Light'),local('OpenSans-Light');unicode-range:U+0100-024F,U+1E00-1EFF,U+20A0-20AB,U+20AD-20CF,U+2C60-2C7F,U+A720-A7FF;font-family:open sans;font-style:normal;font-weight:300;src:local('Open Sans Light'),local('OpenSans-Light');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2212,U+2215,U+E0FF,U+EFFD,U+F000;font-family:open sans;font-style:normal;font-weight:400;src:local('Open Sans'),local('OpenSans');unicode-range:U+0460-052F,U+20B4,U+2DE0-2DFF,U+A640-A69F;font-family:open sans;font-style:normal;font-weight:400;src:local('Open Sans'),local('OpenSans');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-family:open sans;font-style:normal;font-weight:400;src:local('Open Sans'),local('OpenSans');unicode-range:U+1F00-1FFF;font-family:open sans;font-style:normal;font-weight:400;src:local('Open Sans'),local('OpenSans');unicode-range:U+0370-03FF;font-family:open sans;font-style:normal;font-weight:400;src:local('Open Sans'),local('OpenSans');unicode-range:U+0102-0103,U+1EA0-1EF1,U+20AB;font-family:open sans;font-style:normal;font-weight:400;src:local('Open Sans'),local('OpenSans');unicode-range:U+0100-024F,U+1E00-1EFF,U+20A0-20AB,U+20AD-20CF,U+2C60-2C7F,U+A720-A7FF;font-family:open sans;font-style:normal;font-weight:400;src:local('Open Sans'),local('OpenSans');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2212,U+2215,U+E0FF,U+EFFD,U+F000;font-family:open sans;font-style:normal;font-weight:700;src:local('Open Sans Bold'),local('OpenSans-Bold');unicode-range:U+0460-052F,U+20B4,U+2DE0-2DFF,U+A640-A69F;font-family:open sans;font-style:normal;font-weight:700;src:local('Open Sans Bold'),local('OpenSans-Bold');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-family:open sans;font-style:normal;font-weight:700;src:local('Open Sans Bold'),local('OpenSans-Bold');unicode-range:U+1F00-1FFF;font-family:open sans;font-style:normal;font-weight:700;src:local('Open Sans Bold'),local('OpenSans-Bold');unicode-range:U+0370-03FF;font-family:open sans;font-style:normal;font-weight:700;src:local('Open Sans Bold'),local('OpenSans-Bold');unicode-range:U+0102-0103,U+1EA0-1EF1,U+20AB;font-family:open sans;font-style:normal;font-weight:700;src:local('Open Sans Bold'),local('OpenSans-Bold');unicode-range:U+0100-024F,U+1E00-1EFF,U+20A0-20AB,U+20AD-20CF,U+2C60-2C7F,U+A720-A7FF;font-family:open sans;font-style:normal;font-weight:700;src:local('Open Sans Bold'),local('OpenSans-Bold');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2212,U+2215,U+E0FF,U+EFFD,U+F000;font-family:d_icomoon;font-weight:400;font-style:normal;src:url(./fonts/d_icomoon.ttf?33id3j) format('truetype')}[class^=icon-]{line-height:1;-webkit-font-smoothing:antialiased;font-family:d_icomoon!important;font-style:normal;font-weight:400;font-variant:normal;-moz-osx-font-smoothing:grayscale;speak:none;text-transform:none}body,html{font-family:helvetica neue,Helvetica,Arial,sans-serif;height:100%;margin:0;padding:0;background-color:#FFF;color:#A9B1B3;-webkit-font-smoothing:antialiased;font-size:14px}.icon-android:before{content:'\\e601'}.icon-icon_path:before{content:'\\e602'}.icon-ios:before{content:'\\e604'}.text-black{color:#505556}.main,.out-container{display:block;height:100%}p{margin-top:0}.pattern{position:absolute;top:0;width:21.66%;z-index:1;transition:all .5s;max-width:312px}.pattern.left{left:0}.pattern.right{right:0}.pattern img{width:100%;transition:all 1s;pointer-events:none}@media(max-width:1280px){.pattern{width:18%}}.out-container{position:relative;z-index:2;transition:all .5s}.main{width:700px;margin:0 auto;max-width:94%}.main .table-container{display:table;width:100%;height:100%}.main .cell-container{display:table-cell;height:100%;text-align:center;vertical-align:middle}.main .icon-container{position:relative;width:290px;height:290px;margin:0 auto}.main .icon-container .bg-path{position:absolute;left:4px;top:4px;color:#EFF2F2;font-size:290px;z-index:1}.main .icon-container span{display:block;position:absolute;z-index:2}.main .icon-container .icon{left:0;top:0;width:140px;height:140px;padding:10px;background-color:#FFF;border-radius:17.54%}.main .icon-container .icon img{width:120px;height:120px;border-radius:17.54%;max-width:100%}.main .icon-container .qrcode{bottom:0;right:0;width:140px;height:140px;border:20px solid transparent;border-radius:26px}.main .icon-container .qrcode img{width:100px;height:100px}.main>header{display:block;height:100%;min-height:700px;max-height:900px}.main>header .wrapper{width:290px;margin-right:auto;margin-left:auto}.main>header .app-brief{transition:all .5s}.main>header .name{position:relative;width:290px;margin:20px auto;color:#505556;font-weight:400;font-size:28px;text-align:left}.main>header .name i{position:absolute;top:10px;right:100%;margin-right:10px;font-size:26px}.main>header .name span{display:inline-block;line-height:1.6;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;word-wrap:normal}.main>header .release-type{width:290px;margin:24px auto 0;text-align:left}.main>header .scan-tips{width:290px;margin:0 auto;line-height:22px;text-align:left;white-space:nowrap}.main>header .release-info{position:relative;margin-top:30px;margin-bottom:30px;padding-top:30px}.main>header .release-info p{margin-bottom:4px}.main>header .release-info:before{display:block;position:absolute;left:50%;top:0;width:60%;margin-left:-30%;border-top:1px solid #DAE2E3;content:' '}.main>header .action-animate{background-color:#32B2A7;color:#FFF;position:relative;width:200px;height:40px;margin:30px auto 0;line-height:40px;text-align:center;border-radius:20px;overflow:hidden}.main>header .action-animate .action-animate-text{position:absolute;left:0;top:0;width:100%;height:100%;z-index:2}@keyframes example{0%{width:0}10%{width:20px}20%{width:40px}30%{width:60px}40%{width:80px}50%{width:100px}60%{width:120px}70%{width:140px}80%{width:160px}90%{width:180px}100%{width:200px}}.main>header .action-animate .action-animate-active{display:none;width:200px;height:40px;background-color:#32B2A7;animation:example 10s linear;border-radius:20px}@media only screen and (max-width:768px){.main>header{height:100%;max-height:100%;min-height:400px}}@media screen and (max-width:768px){.main>header{min-height:400px}.main>header .release-type,.main>header .scan-tips{display:none}.main>header .release-info{display:block}.main>header .name{font-size:24px;text-align:center}.main>header .name .icon-warp{display:inline-block;position:static;margin-left:-48px;max-width:76%}.main>header .name i{position:static}}.main header .app-brief .icon-container .qrcode{background-color:#EFF2F2;transition:all .25s}.main header .app-brief .name .icon-warp{vertical-align:bottom}.masklayer{position:fixed;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,.5);z-index:99998}@media screen and (max-width:768px){.main{width:100%;min-width:100%}.main .app-brief{text-align:center}.main .app-brief .bg-path,.main .app-brief .qrcode{display:none}.main .icon-container{width:100%;height:auto;text-align:center}.main .icon-container .icon{display:inline-block;position:static}}@media screen and (min-width:1024px){.main header .app-brief .icon-container:hover .qrcode{box-shadow:0 1px 5px rgba(0,0,0,.3);transform:scale(1.6)}}
+@charset "UTF-8";
+* {
+    box-sizing: border-box
+}
+
+@font-face {
+    font-weight: 300;
+    font-style: normal;
+    font-family: roboto slab;
+    src: local('Roboto Slab Light'), local('RobotoSlab-Light');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+    font-weight: 400;
+    font-style: normal;
+    font-family: roboto slab;
+    src: local('Roboto Slab Regular'), local('RobotoSlab-Regular');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+    font-weight: 700;
+    font-style: normal;
+    font-family: roboto slab;
+    src: local('Roboto Slab Bold'), local('RobotoSlab-Bold');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light');
+    unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light');
+    unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light');
+    unicode-range: U+1F00-1FFF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light');
+    unicode-range: U+0370-03FF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light');
+    unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans');
+    unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans');
+    unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans');
+    unicode-range: U+1F00-1FFF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans');
+    unicode-range: U+0370-03FF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans');
+    unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold');
+    unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold');
+    unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold');
+    unicode-range: U+1F00-1FFF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold');
+    unicode-range: U+0370-03FF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold');
+    unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+    font-family: open sans;
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+    font-family: d_icomoon;
+    font-weight: 400;
+    font-style: normal;
+    src: url(./fonts/d_icomoon.ttf?33id3j) format('truetype')
+}
+
+[class^=icon-] {
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    font-family: d_icomoon!important;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    -moz-osx-font-smoothing: grayscale;
+    speak: none;
+    text-transform: none
+}
+
+body,
+html {
+    font-family: helvetica neue, Helvetica, Arial, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #FFF;
+    color: #A9B1B3;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px
+}
+
+.icon-android:before {
+    content: '\e601'
+}
+
+.icon-icon_path:before {
+    content: '\e602'
+}
+
+.icon-ios:before {
+    content: '\e604'
+}
+
+.text-black {
+    color: #505556
+}
+
+.main,
+.out-container {
+    display: block;
+    height: 100%
+}
+
+p {
+    margin-top: 0
+}
+
+.pattern {
+    position: absolute;
+    top: 0;
+    width: 21.66%;
+    z-index: 1;
+    transition: all .5s;
+    max-width: 312px
+}
+
+.pattern.left {
+    left: 0
+}
+
+.pattern.right {
+    right: 0
+}
+
+.pattern img {
+    width: 100%;
+    transition: all 1s;
+    pointer-events: none
+}
+
+@media(max-width:1280px) {
+    .pattern {
+        width: 18%
+    }
+}
+
+.out-container {
+    position: relative;
+    z-index: 2;
+    transition: all .5s
+}
+
+.main {
+    width: 700px;
+    margin: 0 auto;
+    max-width: 94%
+}
+
+.main .table-container {
+    display: table;
+    width: 100%;
+    height: 100%
+}
+
+.main .cell-container {
+    display: table-cell;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle
+}
+
+.main .icon-container {
+    position: relative;
+    width: 290px;
+    height: 290px;
+    margin: 0 auto
+}
+
+.main .icon-container .bg-path {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    color: #EFF2F2;
+    font-size: 290px;
+    z-index: 1
+}
+
+.main .icon-container span {
+    display: block;
+    position: absolute;
+    z-index: 2
+}
+
+.main .icon-container .icon {
+    left: 0;
+    top: 0;
+    width: 140px;
+    height: 140px;
+    padding: 10px;
+    background-color: #FFF;
+    border-radius: 17.54%
+}
+
+.main .icon-container .icon img {
+    width: 120px;
+    height: 120px;
+    border-radius: 17.54%;
+    max-width: 100%
+}
+
+.main .icon-container .qrcode {
+    bottom: 0;
+    right: 0;
+    width: 140px;
+    height: 140px;
+    border: 20px solid transparent;
+    border-radius: 26px
+}
+
+.main .icon-container .qrcode img {
+    width: 100px;
+    height: 100px
+}
+
+.main>header {
+    display: block;
+    height: 100%;
+    min-height: 700px;
+    max-height: 900px
+}
+
+.main>header .wrapper {
+    width: 290px;
+    margin-right: auto;
+    margin-left: auto
+}
+
+.main>header .app-brief {
+    transition: all .5s
+}
+
+.main>header .name {
+    position: relative;
+    width: 290px;
+    margin: 20px auto;
+    color: #505556;
+    font-weight: 400;
+    font-size: 28px;
+    text-align: left
+}
+
+.main>header .name i {
+    position: absolute;
+    top: 10px;
+    right: 100%;
+    margin-right: 10px;
+    font-size: 26px
+}
+
+.main>header .name span {
+    display: inline-block;
+    line-height: 1.6;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: normal
+}
+
+.main>header .release-type {
+    width: 290px;
+    margin: 24px auto 0;
+    text-align: left
+}
+
+.main>header .scan-tips {
+    width: 290px;
+    margin: 0 auto;
+    line-height: 22px;
+    text-align: left;
+    white-space: nowrap
+}
+
+.main>header .release-info {
+    position: relative;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-top: 30px
+}
+
+.main>header .release-info p {
+    margin-bottom: 4px
+}
+
+.main>header .release-info:before {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 60%;
+    margin-left: -30%;
+    border-top: 1px solid #DAE2E3;
+    content: ' '
+}
+
+.main>header .action-animate {
+    background-color: #32B2A7;
+    color: #FFF;
+    position: relative;
+    width: 200px;
+    height: 40px;
+    margin: 30px auto 0;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 20px;
+    overflow: hidden
+}
+
+.main>header .action-animate .action-animate-text {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2
+}
+
+@keyframes example {
+    0% {
+        width: 0
+    }
+    10% {
+        width: 20px
+    }
+    20% {
+        width: 40px
+    }
+    30% {
+        width: 60px
+    }
+    40% {
+        width: 80px
+    }
+    50% {
+        width: 100px
+    }
+    60% {
+        width: 120px
+    }
+    70% {
+        width: 140px
+    }
+    80% {
+        width: 160px
+    }
+    90% {
+        width: 180px
+    }
+    100% {
+        width: 200px
+    }
+}
+
+.main>header .action-animate .action-animate-active {
+    display: none;
+    width: 200px;
+    height: 40px;
+    background-color: #32B2A7;
+    animation: example 10s linear;
+    border-radius: 20px
+}
+
+@media only screen and (max-width:768px) {
+    .main>header {
+        height: 100%;
+        max-height: 100%;
+        min-height: 400px
+    }
+}
+
+@media screen and (max-width:768px) {
+    .main>header {
+        min-height: 400px
+    }
+    .main>header .release-type,
+    .main>header .scan-tips {
+        display: none
+    }
+    .main>header .release-info {
+        display: block
+    }
+    .main>header .name {
+        font-size: 24px;
+        text-align: center
+    }
+    .main>header .name .icon-warp {
+        display: inline-block;
+        position: static;
+        margin-left: -48px;
+        max-width: 76%
+    }
+    .main>header .name i {
+        position: static
+    }
+}
+
+.main header .app-brief .icon-container .qrcode {
+    background-color: #EFF2F2;
+    transition: all .25s
+}
+
+.main header .app-brief .name .icon-warp {
+    vertical-align: bottom
+}
+
+.masklayer {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 99998
+}
+
+@media screen and (max-width:768px) {
+    .main {
+        width: 100%;
+        min-width: 100%
+    }
+    .main .app-brief {
+        text-align: center
+    }
+    .main .app-brief .bg-path,
+    .main .app-brief .qrcode {
+        display: none
+    }
+    .main .icon-container {
+        width: 100%;
+        height: auto;
+        text-align: center
+    }
+    .main .icon-container .icon {
+        display: inline-block;
+        position: static
+    }
+}
+
+@media screen and (min-width:1024px) {
+    .main header .app-brief .icon-container:hover .qrcode {
+        box-shadow: 0 1px 5px rgba(0, 0, 0, .3);
+        transform: scale(1.6)
+    }
+}

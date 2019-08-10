@@ -2,11 +2,10 @@ package org.yzr.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
-import org.springframework.http.converter.json.GsonBuilderUtils;
+import org.yzr.model.App;
+import org.yzr.model.WebHook;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DingdingUtils {
@@ -18,7 +17,7 @@ public class DingdingUtils {
      * @param webhook 钉钉自定义机器人webhook
      * @return
      */
-    public static boolean sendToDingding(String jsonString, String webhook) {
+    private static boolean sendToDingding(String jsonString, String webhook) {
         try{
             String type = "application/json; charset=utf-8";
             RequestBody body = RequestBody.create(MediaType.parse(type), jsonString);
@@ -38,14 +37,33 @@ public class DingdingUtils {
         }
     }
 
-    public static boolean sendMarkdown() {
+    public static void sendMarkdown(App app, PathManager pathManager) {
+        if (app.getWebHookList() == null || app.getWebHookList().size() < 1) {
+            return;
+        }
         Map<String, Object> markdown = new HashMap<>();
-        markdown.put("title", "时代的火车向前开");
-        markdown.put("text", "[ticket(Android)更新](https://www.baidu.com) \n\n ![alt 啊](https://ali-fir-pro-icon.fir.im/62658a54e48ea4b6115da07955c87e20ef4580b9?auth_key=1565408715-0-0-160b683eadd339c11a4ab1c701cda254&tmp=1565406915.71304) \n\n 链接：[https://fir.im/cq7f](https://fir.im/cq7f) \n\n 版本: 1.0 (Build: 1)");
+        markdown.put("title", app.getName());
+        String url = pathManager.getBaseURL(false) + "s/" + app.getShortCode();
+        String platform = "iOS";
+        if (app.getPlatform().equalsIgnoreCase("android")) {
+            platform = "Android";
+        }
+
+        String appInfo = String.format("[%s(%s)更新](%s)", app.getName(), platform, url);
+        // 将图片转为 base64, 内网 ip 钉钉无法访问，直接给图片数据
+        String iconPath = PathManager.getFullPath(app.getCurrentPackage())  + "icon.png";
+        String icon = "data:image/png;base64," + ImageUtils.convertImageToBase64(iconPath);
+        String pathInfo = String.format("![%s](%s)", app.getName(), icon);
+        String otherInfo = String.format("链接：[%s](%s) \n\n 版本：%s (Build: %s)", url, url, app.getCurrentPackage().getVersion(), app.getCurrentPackage().getBuildVersion());
+        String text = appInfo + " \n\n " + pathInfo + " \n\n " + otherInfo;
+        markdown.put("text", text);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("msgtype", "markdown");
         jsonObject.put("markdown", markdown);
-
-        return sendToDingding(jsonObject.toJSONString(), "https://oapi.dingtalk.com/robot/send?access_token=a2030da1a934473cc8f950d342888321387ed65f92bcf16a6bf4c048903e5a0e");
+        String json = jsonObject.toJSONString();
+        for (WebHook webHook :
+                app.getWebHookList()) {
+            sendToDingding(json, webHook.getUrl());
+        }
     }
 }

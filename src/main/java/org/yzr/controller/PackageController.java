@@ -11,6 +11,7 @@ import org.yzr.model.App;
 import org.yzr.model.Package;
 import org.yzr.service.AppService;
 import org.yzr.service.PackageService;
+import org.yzr.utils.DingdingUtils;
 import org.yzr.utils.PathManager;
 import org.yzr.utils.ipa.PlistGenerator;
 import org.yzr.vo.AppViewModel;
@@ -94,6 +95,8 @@ public class PackageController {
             app = this.appService.save(app);
             // URL
             String codeURL = this.pathManager.getBaseURL(false) + "p/code/" + app.getCurrentPackage().getId();
+            // 发送钉钉消息
+            DingdingUtils.sendMarkdown(app, pathManager);
             map.put("code", codeURL);
             map.put("success", true);
         } catch (Exception e) {
