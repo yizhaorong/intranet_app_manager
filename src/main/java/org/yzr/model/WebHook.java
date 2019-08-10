@@ -12,6 +12,9 @@ import javax.persistence.*;
 @Setter
 @Getter
 public class WebHook {
+    // 钉钉
+    public static final String WEB_HOOK_TYPE_DING_DING="DING_DING";
+
     // 主键
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -22,6 +25,8 @@ public class WebHook {
     private String name;
 
     private String url;
+
+    private String type;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name="appId")
