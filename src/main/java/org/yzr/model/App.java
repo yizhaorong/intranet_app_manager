@@ -36,6 +36,9 @@ public class App {
     // 包列表
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "app")
     private List<Package> packageList;
+    // webHook列表
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "app")
+    private List<WebHook> webHookList;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     // 当前包
     @JoinColumn(name = "currentID",referencedColumnName = "id")
