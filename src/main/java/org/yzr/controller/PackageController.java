@@ -11,9 +11,9 @@ import org.yzr.model.App;
 import org.yzr.model.Package;
 import org.yzr.service.AppService;
 import org.yzr.service.PackageService;
-import org.yzr.utils.DingdingUtils;
 import org.yzr.utils.PathManager;
 import org.yzr.utils.ipa.PlistGenerator;
+import org.yzr.utils.webhook.WebHookClient;
 import org.yzr.vo.AppViewModel;
 import org.yzr.vo.PackageViewModel;
 
@@ -95,8 +95,8 @@ public class PackageController {
             app = this.appService.save(app);
             // URL
             String codeURL = this.pathManager.getBaseURL(false) + "p/code/" + app.getCurrentPackage().getId();
-            // 发送钉钉消息
-            DingdingUtils.sendMarkdown(app, pathManager);
+            // 发送WebHook消息
+            WebHookClient.sendMessage(app, pathManager);
             map.put("code", codeURL);
             map.put("success", true);
         } catch (Exception e) {
@@ -212,6 +212,7 @@ public class PackageController {
             String newFileName = UUID.randomUUID().toString() + "." + ext;
             // 转存到 tmp
             String destPath = FileUtils.getTempDirectoryPath() + File.separator + newFileName;
+            destPath = destPath.replaceAll("//", "/");
             srcFile.transferTo(new File(destPath));
             return destPath;
         } catch (Exception e) {

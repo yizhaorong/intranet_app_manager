@@ -1,14 +1,16 @@
-package org.yzr.utils;
+package org.yzr.utils.webhook;
 
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
 import org.yzr.model.App;
 import org.yzr.model.WebHook;
+import org.yzr.utils.ImageUtils;
+import org.yzr.utils.PathManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DingdingUtils {
+public class DingDingWebHook implements IWebHook {
 
     private static OkHttpClient client = new OkHttpClient();
     /**
@@ -37,7 +39,8 @@ public class DingdingUtils {
         }
     }
 
-    public static void sendMarkdown(App app, PathManager pathManager) {
+    @Override
+    public void sendMessage(App app, PathManager pathManager) {
         if (app.getWebHookList() == null || app.getWebHookList().size() < 1) {
             return;
         }

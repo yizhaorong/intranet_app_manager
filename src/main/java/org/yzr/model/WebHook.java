@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 public class WebHook {
     // 钉钉
-    public static final String WEB_HOOK_TYPE_DING_DING="DING_DING";
+    public static final String WEB_HOOK_TYPE_DING_DING="DingDing";
 
     // 主键
     @Id

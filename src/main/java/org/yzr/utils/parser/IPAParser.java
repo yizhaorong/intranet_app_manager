@@ -25,6 +25,7 @@ public class IPAParser implements PackageParser {
             String targetPath = ZipUtils.unzip(filePath);
             String appPath = appPath(targetPath);
             String infoPlistPath = appPath + File.separator + "Info.plist";
+            infoPlistPath = infoPlistPath.replaceAll("//", "/");
             File infoPlistFile  = new File(infoPlistPath);
             // Plist 文件获取失败
             if (!infoPlistFile.exists()) return null;
@@ -46,7 +47,11 @@ public class IPAParser implements PackageParser {
             aPackage.setPlatform("ios");
 
             // 获取应用图标
-            String iconPath = appIcon(appPath, infoPlist.stringValueForKeyPath("CFBundleIcons.CFBundlePrimaryIcon.CFBundleIconName"));
+            String iconName = infoPlist.stringValueForKeyPath("CFBundleIcons.CFBundlePrimaryIcon.CFBundleIconName");
+            if (iconName == null) {
+                iconName = infoPlist.stringValueForKeyPath("CFBundleIconFile");
+            }
+            String iconPath = appIcon(appPath, iconName);
             String iconTempPath = PathManager.getTempIconPath(aPackage);
             PNGConverter.convert(iconPath, iconTempPath);
 
@@ -72,7 +77,7 @@ public class IPAParser implements PackageParser {
             File[] listFiles = payloadFile.listFiles();
             String appName = null;
             for (File file : listFiles) {
-                if (file.getName().contains(".app")) {
+                if (file.getName().endsWith(".app")) {
                     appName = file.getName();
                     break;
                 }
@@ -94,6 +99,8 @@ public class IPAParser implements PackageParser {
             String pattern = iconName + "[4,6]0x[4,6]0@[2,3]?x.png";
             boolean isMatch = Pattern.matches(pattern, file.getName());
             if (isMatch) {
+                iconNames.add(file.getName());
+            } else if (file.getName().equals(iconName)) {
                 iconNames.add(file.getName());
             }
         }

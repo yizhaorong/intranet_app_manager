@@ -5,13 +5,33 @@
 
 #### 效果
 
-样式与 fir 一致，直接扒的，未进行无用样式清理。
+样式与 fir 一致，直接扒的。
+
+##### 首页
 
 ![首页](images/index.jpg)
 
+##### 更新列表
+
 ![首页](images/list.jpg)
 
+##### 基本信息
+
+![](images/list_info.jpg)
+
+##### 钉钉集成
+
+![](images/list_web_hook.jpg)
+
+##### 钉钉机器人消息
+
+![](images/ding_ding.jpg)
+
+##### PC安装页
+
 ![首页](images/install.jpg)
+
+##### 手机安装页
 
 ![首页](images/mobile_install.jpg)
 
