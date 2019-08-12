@@ -35,6 +35,10 @@
 
 ![首页](images/mobile_install.jpg)
 
+##### Jenkins 集成效果
+
+![](images/jenkins_code.jpg)
+
 ##### 证书信任设置
 
 ![首页](images/install_crt.gif)
