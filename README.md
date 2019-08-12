@@ -45,7 +45,7 @@
 
 ##### 数据库
 
->  Mac 下安装 Mysql
+>  Mac 下安装 MySQL
 
 ```shell
 brew install mysql
