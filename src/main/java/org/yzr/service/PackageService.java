@@ -39,9 +39,12 @@ public class PackageService {
             String tempIconPath = PathManager.getTempIconPath(aPackage);
             String iconPath = packagePath + File.separator + "icon.png";
             String sourcePath = packagePath + File.separator + fileName;
+            String jpgIconPath = packagePath + File.separator + "icon.jpg";
 
             // 拷贝图标
             ImageUtils.resize(tempIconPath, iconPath, 192, 192);
+            // 生成钉钉发送所需要图片
+            ImageUtils.convertPNGToJPG(iconPath, jpgIconPath, 64, 64);
             // 源文件
             FileUtils.copyFile(new File(filePath), new File(sourcePath));
 
