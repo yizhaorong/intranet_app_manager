@@ -143,7 +143,7 @@ $(function () {
 
     $(".app-delete").click(function () {
         var url = "/p/delete/" + $(this).attr("data");
-        $.post(url, data, function(result){
+        $.post(url, function(result){
             window.location.href = window.location.href
             window.location.reload
         });
