@@ -20,9 +20,10 @@
                     设备ID
                 </h4>
             </a>
-            <a class="list-group-item" href="#" th:each="device,appStat : ${app.devices}">
-                [[${device}]]
-            </a>
+            <div th:each="device,appStat : ${app.devices}">
+                <h5>[[${device}]]</h5>
+                <hr />
+            </div>
         </div>
     </div>
 </body>
