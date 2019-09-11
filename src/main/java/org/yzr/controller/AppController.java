@@ -11,7 +11,6 @@ import org.yzr.vo.AppViewModel;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,20 @@ public class AppController {
         request.setAttribute("package", appViewModel);
         request.setAttribute("apps", appViewModel.getPackageList());
         return "list";
+    }
+
+    @RequestMapping("/packageList/{appID}")
+    @ResponseBody
+    public Map<String, Object> getAppPackageList(@PathVariable("appID") String appID) {
+        AppViewModel appViewModel = this.appService.getById(appID);
+        Map<String, Object> map = new HashMap<>();
+        try {
+            map.put("packages", appViewModel.getPackageList());
+            map.put("success", true);
+        } catch (Exception e) {
+            map.put("success", false);
+        }
+        return map;
     }
 
     @RequestMapping("/app/delete/{id}")

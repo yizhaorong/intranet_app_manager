@@ -59,6 +59,7 @@
                   <span itemprop="softwareVersion">[[${app.version}]] (Build [[${app.buildVersion}]]) -
                     [[${app.currentPackage.displaySize}]]</span></p>
                 <p>更新于: <span itemprop="datePublished">[[${app.currentPackage.displayTime}]]</span></p>
+                <p>[[${app.currentPackage.message}]]</p>
               </div>
               <div class="action-animate">
                 <input id="installURL" th:value="${app.currentPackage.installURL}" style="display: none" />

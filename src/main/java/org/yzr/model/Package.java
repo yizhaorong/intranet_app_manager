@@ -34,6 +34,8 @@ public class Package {
     private String minVersion;
     // 平台(Android 或 iOS)
     private String platform;
+    // 扩展消息 (json格式)
+    private String extra;
     // 文件名
     private String fileName;
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

@@ -1,15 +1,17 @@
 package org.yzr.vo;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.StringUtils;
 import org.yzr.model.Package;
 import org.yzr.utils.PathManager;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @Getter
@@ -31,6 +33,7 @@ public class PackageViewModel {
     private String type;
     private List<String> devices;
     private int deviceCount;
+    private String message;
 
     public PackageViewModel(Package aPackage, PathManager pathManager) {
         this.downloadURL = pathManager.getBaseURL(false) + "p/" + aPackage.getId();
@@ -78,6 +81,18 @@ public class PackageViewModel {
         } else {
             this.type = "内测版";
         }
+        String message = "";
+        if (StringUtils.hasLength(aPackage.getExtra())) {
+            Map<String, String> extra = (Map<String, String>) JSON.parse(aPackage.getExtra());
+            if (extra.containsKey("jobName")) {
+                message += " 任务名:" + extra.get("jobName");
+            }
+
+            if (extra.containsKey("buildNumber")) {
+                message += " 编号:#" + extra.get("buildNumber");
+            }
+        }
+        this.message = message;
     }
 
 }

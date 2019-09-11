@@ -1,10 +1,12 @@
 package org.yzr.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import net.glxn.qrgen.javase.QRCode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.yzr.model.App;
@@ -88,6 +90,18 @@ public class PackageController {
         try {
             String filePath = transfer(file);
             Package aPackage = this.packageService.buildPackage(filePath);
+            Map<String , String> extra = new HashMap<>();
+            String jobName = request.getParameter("jobName");
+            String buildNumber = request.getParameter("buildNumber");
+            if (StringUtils.hasLength(jobName)) {
+                extra.put("jobName", jobName);
+            }
+            if (StringUtils.hasLength(buildNumber)) {
+                extra.put("buildNumber", buildNumber);
+            }
+            if (!extra.isEmpty()) {
+                aPackage.setExtra(JSON.toJSONString(extra));
+            }
             App app = this.appService.getByPackage(aPackage);
             app.getPackageList().add(aPackage);
             app.setCurrentPackage(aPackage);
