@@ -1,7 +1,6 @@
 package org.yzr.vo;
 
 import com.alibaba.fastjson.JSON;
-import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.springframework.util.StringUtils;
 import org.yzr.model.Package;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 
-@Getter
 public class PackageViewModel {
     private String downloadURL;
     private String safeDownloadURL;
@@ -60,7 +58,7 @@ public class PackageViewModel {
             this.installURL = pathManager.getPackageResourceURL(aPackage, false) + aPackage.getFileName();
         }
         this.previewURL = pathManager.getBaseURL(false) + "s/" + aPackage.getApp().getShortCode() + "?id=" + aPackage.getId();
-        if (this.isIOS()) {
+        if (this.isiOS()) {
             if (aPackage.getProvision() == null) {
                 this.type = "内测版";
             } else {
@@ -95,4 +93,75 @@ public class PackageViewModel {
         this.message = message;
     }
 
+    public String getDownloadURL() {
+        return downloadURL;
+    }
+
+    public String getSafeDownloadURL() {
+        return safeDownloadURL;
+    }
+
+    public String getIconURL() {
+        return iconURL;
+    }
+
+    public String getInstallURL() {
+        return installURL;
+    }
+
+    public String getPreviewURL() {
+        return previewURL;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getBundleID() {
+        return bundleID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public String getBuildVersion() {
+        return buildVersion;
+    }
+
+    public String getDisplaySize() {
+        return displaySize;
+    }
+
+    public String getDisplayTime() {
+        return displayTime;
+    }
+
+    public boolean isiOS() {
+        return iOS;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public List<String> getDevices() {
+        return devices;
+    }
+
+    public int getDeviceCount() {
+        return deviceCount;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

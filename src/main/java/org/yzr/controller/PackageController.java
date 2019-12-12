@@ -2,7 +2,6 @@ package org.yzr.controller;
 
 
 import com.alibaba.fastjson.JSON;
-import net.glxn.qrgen.javase.QRCode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
@@ -14,6 +13,7 @@ import org.yzr.model.Package;
 import org.yzr.service.AppService;
 import org.yzr.service.PackageService;
 import org.yzr.utils.PathManager;
+import org.yzr.utils.QRCodeUtil;
 import org.yzr.utils.ipa.PlistGenerator;
 import org.yzr.utils.webhook.WebHookClient;
 import org.yzr.vo.AppViewModel;
@@ -165,7 +165,7 @@ public class PackageController {
     public void getManifest(@PathVariable("id") String id, HttpServletResponse response) {
         try {
             PackageViewModel viewModel = this.packageService.findById(id);
-            if (viewModel != null && viewModel.isIOS()) {
+            if (viewModel != null && viewModel.isiOS()) {
                 response.setContentType("application/force-download");
                 response.setHeader("Content-Disposition", "attachment;fileName=manifest.plist");
                 Writer writer = new OutputStreamWriter(response.getOutputStream());
@@ -187,7 +187,7 @@ public class PackageController {
             PackageViewModel viewModel = this.packageService.findById(id);
             if (viewModel != null) {
                 response.setContentType("image/png");
-                QRCode.from(viewModel.getPreviewURL()).withSize(250, 250).writeTo(response.getOutputStream());
+                QRCodeUtil.encode(viewModel.getPreviewURL()).withSize(250, 250).writeTo(response.getOutputStream());
             }
         } catch (Exception e) {
             e.printStackTrace();

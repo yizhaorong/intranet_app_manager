@@ -1,18 +1,13 @@
 package org.yzr.vo;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.yzr.model.App;
 import org.yzr.model.Package;
 import org.yzr.utils.PathManager;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 
-@Getter
 public class AppViewModel {
 
     private String id;
@@ -105,5 +100,53 @@ public class AppViewModel {
             return 1;
         });
         return packageViewModels;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public String getBundleID() {
+        return bundleID;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getBuildVersion() {
+        return buildVersion;
+    }
+
+    public String getMinVersion() {
+        return minVersion;
+    }
+
+    public String getShortCode() {
+        return shortCode;
+    }
+
+    public String getInstallPath() {
+        return installPath;
+    }
+
+    public List<PackageViewModel> getPackageList() {
+        return packageList;
+    }
+
+    public PackageViewModel getCurrentPackage() {
+        return currentPackage;
     }
 }
