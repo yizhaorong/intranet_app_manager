@@ -1,22 +1,17 @@
 package org.yzr.service;
 
 
-import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
-import org.yzr.dao.AppDao;
 import org.yzr.dao.PackageDao;
-import org.yzr.model.App;
 import org.yzr.model.Package;
 import org.yzr.utils.ImageUtils;
 import org.yzr.utils.PathManager;
-import org.yzr.utils.ipa.PlistGenerator;
 import org.yzr.utils.parser.ParserClient;
 import org.yzr.vo.PackageViewModel;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 
@@ -39,12 +34,9 @@ public class PackageService {
             String tempIconPath = PathManager.getTempIconPath(aPackage);
             String iconPath = packagePath + File.separator + "icon.png";
             String sourcePath = packagePath + File.separator + fileName;
-            String jpgIconPath = packagePath + File.separator + "icon.jpg";
 
             // 拷贝图标
             ImageUtils.resize(tempIconPath, iconPath, 192, 192);
-            // 生成钉钉发送所需要图片
-            ImageUtils.convertPNGToJPG(iconPath, jpgIconPath, 64, 64);
             // 源文件
             FileUtils.copyFile(new File(filePath), new File(sourcePath));
 

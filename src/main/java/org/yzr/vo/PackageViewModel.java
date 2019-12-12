@@ -1,18 +1,18 @@
 package org.yzr.vo;
 
-import lombok.Getter;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.StringUtils;
 import org.yzr.model.Package;
 import org.yzr.utils.PathManager;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
-@Getter
 public class PackageViewModel {
     private String downloadURL;
     private String safeDownloadURL;
@@ -31,6 +31,7 @@ public class PackageViewModel {
     private String type;
     private List<String> devices;
     private int deviceCount;
+    private String message;
 
     public PackageViewModel(Package aPackage, PathManager pathManager) {
         this.downloadURL = pathManager.getBaseURL(false) + "p/" + aPackage.getId();
@@ -57,7 +58,7 @@ public class PackageViewModel {
             this.installURL = pathManager.getPackageResourceURL(aPackage, false) + aPackage.getFileName();
         }
         this.previewURL = pathManager.getBaseURL(false) + "s/" + aPackage.getApp().getShortCode() + "?id=" + aPackage.getId();
-        if (this.isIOS()) {
+        if (this.isiOS()) {
             if (aPackage.getProvision() == null) {
                 this.type = "内测版";
             } else {
@@ -78,6 +79,89 @@ public class PackageViewModel {
         } else {
             this.type = "内测版";
         }
+        String message = "";
+        if (StringUtils.hasLength(aPackage.getExtra())) {
+            Map<String, String> extra = (Map<String, String>) JSON.parse(aPackage.getExtra());
+            if (extra.containsKey("jobName")) {
+                message += " 任务名:" + extra.get("jobName");
+            }
+
+            if (extra.containsKey("buildNumber")) {
+                message += " 编号:#" + extra.get("buildNumber");
+            }
+        }
+        this.message = message;
     }
 
+    public String getDownloadURL() {
+        return downloadURL;
+    }
+
+    public String getSafeDownloadURL() {
+        return safeDownloadURL;
+    }
+
+    public String getIconURL() {
+        return iconURL;
+    }
+
+    public String getInstallURL() {
+        return installURL;
+    }
+
+    public String getPreviewURL() {
+        return previewURL;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getBundleID() {
+        return bundleID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public String getBuildVersion() {
+        return buildVersion;
+    }
+
+    public String getDisplaySize() {
+        return displaySize;
+    }
+
+    public String getDisplayTime() {
+        return displayTime;
+    }
+
+    public boolean isiOS() {
+        return iOS;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public List<String> getDevices() {
+        return devices;
+    }
+
+    public int getDeviceCount() {
+        return deviceCount;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

@@ -1,12 +1,17 @@
 package org.yzr.utils.webhook;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
+import org.springframework.util.StringUtils;
 import org.yzr.model.App;
+import org.yzr.model.Package;
 import org.yzr.model.WebHook;
 import org.yzr.utils.ImageUtils;
 import org.yzr.utils.PathManager;
+import org.yzr.utils.QRCodeUtil;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,19 +51,30 @@ public class DingDingWebHook implements IWebHook {
         }
         Map<String, Object> markdown = new HashMap<>();
         markdown.put("title", app.getName());
-        String url = pathManager.getBaseURL(false) + "s/" + app.getShortCode();
+        String url = pathManager.getBaseURL(false) + "s/" + app.getShortCode() + "?id=" + app.getCurrentPackage().getId();
         String platform = "iOS";
         if (app.getPlatform().equalsIgnoreCase("android")) {
             platform = "Android";
         }
 
         String appInfo = String.format("[%s(%s)更新](%s)", app.getName(), platform, url);
+
+        String iconPath = PathManager.getFullPath(app.getCurrentPackage())  + "icon.png";
         // 将图片转为 base64, 内网 ip 钉钉无法访问，直接给图片数据
-        String iconPath = PathManager.getFullPath(app.getCurrentPackage())  + "icon.jpg";
-        String icon = "data:image/jpg;base64," + ImageUtils.convertImageToBase64(iconPath);
+        String codePath =  PathManager.getFullPath(app.getCurrentPackage())  + "code.jpg";
+        File codeFile = new File(codePath);
+        // 图片不存在，生成图片
+        if (!codeFile.exists()) {
+            QRCodeUtil.encode(url).withSize(150, 150).withIcon(new File(iconPath)).writeTo(new File(codePath));
+        }
+        String icon = "data:image/jpg;base64," + ImageUtils.convertImageToBase64(codePath);
         String pathInfo = String.format("![%s](%s)", app.getName(), icon);
         String otherInfo = String.format("链接：[%s](%s) \n\n 版本：%s (Build: %s)", url, url, app.getCurrentPackage().getVersion(), app.getCurrentPackage().getBuildVersion());
+        String message = this.getPackageMessage(app.getCurrentPackage());
         String text = appInfo + " \n\n " + pathInfo + " \n\n " + otherInfo;
+        if (message.length() > 0) {
+            text += "\n\n" + message;
+        }
         markdown.put("text", text);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("msgtype", "markdown");
@@ -68,5 +84,24 @@ public class DingDingWebHook implements IWebHook {
                 app.getWebHookList()) {
             sendToDingding(json, webHook.getUrl());
         }
+    }
+
+    /**
+     * 获取扩展消息
+     * @return
+     */
+    private String getPackageMessage(Package aPackage) {
+        String message = "";
+        if (StringUtils.hasLength(aPackage.getExtra())) {
+            Map<String, String> extra = (Map<String, String>) JSON.parse(aPackage.getExtra());
+            if (extra.containsKey("jobName")) {
+                message += "任务名:" + extra.get("jobName");
+            }
+
+            if (extra.containsKey("buildNumber")) {
+                message += " 编号:#" + extra.get("buildNumber");
+            }
+        }
+        return message;
     }
 }
