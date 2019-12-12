@@ -72,7 +72,7 @@ create database app_manager DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 
 ##### 配置
 
- [下载](https://github.com/yizhaorong/intranet_app_manager/releases/download/v1.0.0/release_1.0.0.zip)，解压包。
+ [下载](https://share.weiyun.com/5zRBCtF)，解压包。
 
 > 配置 HTTPS
 
