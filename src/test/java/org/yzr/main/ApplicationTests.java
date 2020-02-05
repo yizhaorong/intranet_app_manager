@@ -11,25 +11,25 @@ import org.yzr.utils.parser.ParserClient;
 import org.yzr.vo.PackageViewModel;
 
 import javax.annotation.Resource;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class ApplicationTests {
-    @Resource
-    private PackageService packageService;
-    @Test
-    public void contextLoads() {
-
-    }
-
-    @Test
-    public void testSave() {
-        Package aPackage = new Package();
-        aPackage.setName("升学e网通");
-        aPackage.setBundleID("org.yzr.test");
-        aPackage.setVersion("6.9.7");
-        this.packageService.save(aPackage);
-    }
+//    @Resource
+//    private PackageService packageService;
+//    @Test
+//    public void contextLoads() {
+//
+//    }
+//
+//    @Test
+//    public void testSave() {
+//        Package aPackage = new Package();
+//        aPackage.setName("升学e网通");
+//        aPackage.setBundleID("org.yzr.test");
+//        aPackage.setVersion("6.9.7");
+//        this.packageService.save(aPackage);
+//    }
 
 //    @Test
 //    public void testFileName() {
