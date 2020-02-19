@@ -7,9 +7,9 @@ import org.springframework.util.StringUtils;
 import org.yzr.model.App;
 import org.yzr.model.Package;
 import org.yzr.model.WebHook;
-import org.yzr.utils.ImageUtils;
-import org.yzr.utils.PathManager;
-import org.yzr.utils.QRCodeUtil;
+import org.yzr.utils.image.ImageUtils;
+import org.yzr.utils.file.PathManager;
+import org.yzr.utils.image.QRCodeUtil;
 
 import java.io.File;
 import java.util.HashMap;

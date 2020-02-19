@@ -6,7 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name="tb_package")
+@Table(name = "tb_package")
 public class Package {
     // 主键
     @Id
@@ -34,13 +34,15 @@ public class Package {
     private String extra;
     // 文件名
     private String fileName;
+    private Storage sourceFile;
+    private Storage iconFile;
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name="appId")
+    @JoinColumn(name = "appId")
     private App app;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     // Provision 文件
-    @JoinColumn(name = "provisionId",referencedColumnName = "id")
-    private  Provision provision;
+    @JoinColumn(name = "provisionId", referencedColumnName = "id")
+    private Provision provision;
 
     public String getId() {
         return id;

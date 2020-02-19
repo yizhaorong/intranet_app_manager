@@ -1,4 +1,4 @@
-package org.yzr.utils;
+package org.yzr.utils.image;
 
 import com.jcraft.jzlib.Deflater;
 import com.jcraft.jzlib.GZIPException;

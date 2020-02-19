@@ -5,9 +5,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.yzr.dao.PackageDao;
+import org.yzr.model.App;
 import org.yzr.model.Package;
-import org.yzr.utils.ImageUtils;
-import org.yzr.utils.PathManager;
+import org.yzr.model.User;
+import org.yzr.utils.file.PathManager;
+import org.yzr.utils.image.ImageUtils;
 import org.yzr.utils.parser.ParserClient;
 import org.yzr.vo.PackageViewModel;
 
@@ -23,9 +25,13 @@ public class PackageService {
     @Resource
     private PathManager pathManager;
 
-    public Package buildPackage(String filePath) {
+    public Package buildPackage(String filePath, User user) throws ClassNotFoundException {
         Package aPackage = ParserClient.parse(filePath);
         try {
+            App app = new App();
+            app.setOwner(user);
+            aPackage.setApp(app);
+
             String fileName = aPackage.getPlatform() + "." + FilenameUtils.getExtension(filePath);
             // 更新文件名
             aPackage.setFileName(fileName);
@@ -47,6 +53,7 @@ public class PackageService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        aPackage.setApp(null);
         return aPackage;
     }
 
@@ -58,6 +65,8 @@ public class PackageService {
     @Transactional
     public Package get(String id) {
         Package aPackage = this.packageDao.findById(id).get();
+        // 级联查询用户
+        aPackage.getApp().getOwner().getId();
         return aPackage;
     }
 

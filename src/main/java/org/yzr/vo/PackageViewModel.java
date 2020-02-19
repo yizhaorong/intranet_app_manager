@@ -4,10 +4,13 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.springframework.util.StringUtils;
 import org.yzr.model.Package;
-import org.yzr.utils.PathManager;
+import org.yzr.utils.date.DateUtil;
+import org.yzr.utils.file.PathManager;
 
 import java.net.URLEncoder;
+import java.time.ZoneOffset;
 import java.util.Arrays;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +55,9 @@ public class PackageViewModel {
             String url = pathManager.getBaseURL(true) + "m/" + aPackage.getId();
             try {
                 this.installURL = "itms-services://?action=download-manifest&url=" + URLEncoder.encode(url, "utf-8");
-            } catch (Exception e){e.printStackTrace();}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if (aPackage.getPlatform().equals("android")) {
             this.iOS = false;
             this.installURL = pathManager.getPackageResourceURL(aPackage, false) + aPackage.getFileName();
@@ -64,7 +69,7 @@ public class PackageViewModel {
             } else {
                 if (aPackage.getProvision().isEnterprise()) {
                     this.type = "企业版";
-                } else  {
+                } else {
                     if ("AdHoc".equalsIgnoreCase(aPackage.getProvision().getType())) {
                         this.type = "内测版";
                     } else {

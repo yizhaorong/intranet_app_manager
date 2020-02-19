@@ -1,4 +1,4 @@
-package org.yzr.utils;
+package org.yzr.utils.file;
 
 import org.apache.commons.io.FileUtils;
 
@@ -9,7 +9,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ZipUtils {
+public class ZipUtil {
 
     public static String unzip(String path) {
         try {
@@ -18,7 +18,7 @@ public class ZipUtils {
             ZipFile zipFile = new ZipFile(path);
             Enumeration<?> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
-                ZipEntry entry = (ZipEntry)entries.nextElement();
+                ZipEntry entry = (ZipEntry) entries.nextElement();
                 if (entry.isDirectory()) {
                     String dirPath = destDirPath + File.separator + entry.getName();
                     File dir = new File(dirPath);

@@ -1,12 +1,19 @@
 package org.yzr.controller;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.yzr.model.User;
 import org.yzr.service.AppService;
-import org.yzr.utils.PathManager;
+import org.yzr.utils.file.PathManager;
+import org.yzr.utils.response.BaseResponse;
+import org.yzr.utils.response.ResponseUtil;
 import org.yzr.vo.AppViewModel;
 
 import javax.annotation.Resource;
@@ -23,10 +30,13 @@ public class AppController {
     @Resource
     private PathManager pathManager;
 
+    @RequiresAuthentication
     @GetMapping("/apps")
     public String apps(HttpServletRequest request) {
-        try{
-            List<AppViewModel> apps = this.appService.findAll();
+        try {
+            Subject currentUser = SecurityUtils.getSubject();
+            User user = (User) currentUser.getPrincipal();
+            List<AppViewModel> apps = this.appService.findByUser(user);
             request.setAttribute("apps", apps);
             request.setAttribute("baseURL", this.pathManager.getBaseURL(false));
         } catch (Exception e) {
@@ -36,6 +46,7 @@ public class AppController {
         return "index";
     }
 
+    @RequiresPermissions("/apps/get")
     @GetMapping("/apps/{appID}")
     public String getAppById(@PathVariable("appID") String appID, HttpServletRequest request) {
         AppViewModel appViewModel = this.appService.getById(appID);
@@ -44,6 +55,7 @@ public class AppController {
         return "list";
     }
 
+    @RequiresPermissions("/packageList/get")
     @RequestMapping("/packageList/{appID}")
     @ResponseBody
     public Map<String, Object> getAppPackageList(@PathVariable("appID") String appID) {
@@ -58,17 +70,25 @@ public class AppController {
         return map;
     }
 
+    @RequiresPermissions("/app/delete")
     @RequestMapping("/app/delete/{id}")
     @ResponseBody
-    public Map<String, Object> deleteById(@PathVariable("id") String id) {
-        Map<String, Object> map = new HashMap<>();
+    public BaseResponse deleteById(@PathVariable("id") String id) {
         try {
-            this.appService.deleteById(id);
-            map.put("success", true);
+            Subject currentUser = SecurityUtils.getSubject();
+            User user = (User) currentUser.getPrincipal();
+            if (user == null) {
+                return ResponseUtil.unauthz();
+            }
+            AppViewModel viewModel = this.appService.getById(id);
+            if (viewModel.getUserId().equals(user.getId())) {
+                this.appService.deleteById(id);
+                return ResponseUtil.ok("删除成功");
+            }
+            return ResponseUtil.unauthz();
         } catch (Exception e) {
-            map.put("success", false);
+            return ResponseUtil.fail();
         }
-        return map;
     }
 
 }

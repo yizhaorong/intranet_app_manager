@@ -2,7 +2,7 @@ package org.yzr.vo;
 
 import org.yzr.model.App;
 import org.yzr.model.Package;
-import org.yzr.utils.PathManager;
+import org.yzr.utils.file.PathManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,8 @@ public class AppViewModel {
 
     private String installPath;
 
+    private String userId;
+
     private List<PackageViewModel> packageList;
 
     private PackageViewModel currentPackage;
@@ -44,6 +46,8 @@ public class AppViewModel {
         this.id = app.getId();
         this.platform = app.getPlatform();
         this.bundleID = app.getBundleID();
+        app.getCurrentPackage().setApp(app);
+        this.userId = app.getOwner().getId();
         this.icon =  PathManager.getRelativePath(app.getCurrentPackage()) + "icon.png";
         Package aPackage = findPackageById(app, null);
         this.version = aPackage.getVersion();
@@ -148,5 +152,9 @@ public class AppViewModel {
 
     public PackageViewModel getCurrentPackage() {
         return currentPackage;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 }

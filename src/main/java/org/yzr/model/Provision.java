@@ -3,11 +3,11 @@ package org.yzr.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
+
 
 
 @Entity
-@Table(name="tb_provision")
+@Table(name = "tb_provision")
 public class Provision {
     // 主键
     @Id
@@ -17,8 +17,8 @@ public class Provision {
     private String id;
     private String teamName;
     private String teamID;
-    private Date createDate;
-    private Date expirationDate;
+    private long createDate;
+    private long expirationDate;
     private String UUID;
     @Column(length = 80000)
     private String[] devices;
@@ -50,19 +50,19 @@ public class Provision {
         this.teamID = teamID;
     }
 
-    public Date getCreateDate() {
+    public long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
 
-    public Date getExpirationDate() {
+    public long getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(long expirationDate) {
         this.expirationDate = expirationDate;
     }
 

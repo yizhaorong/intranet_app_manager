@@ -227,9 +227,11 @@ function bindActions() {
         console.log(li);
         var self = $("." + li);
         $.post(url, function (result) {
-            if (result.success) {
+            var success = result.code == 0;
+            if (success) {
                 self.remove();
             }
+            $.toast({text: result.msg, icon: success ? "success" : "error"});
         });
     });
 }

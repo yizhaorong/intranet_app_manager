@@ -15,8 +15,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import javax.annotation.Resource;
 
 @SpringBootApplication
-//@EnableJpaRepositories("org.yzr.dao") // JPA扫描该包路径下的Repositorie
-//@EntityScan("org.yzr.model") // 扫描Entity实体类
 public class Application {
     @Resource
     private Environment environment;

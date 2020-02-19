@@ -1,4 +1,4 @@
-package org.yzr.utils;
+package org.yzr.utils.image;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

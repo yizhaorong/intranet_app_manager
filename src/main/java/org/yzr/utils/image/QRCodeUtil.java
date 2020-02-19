@@ -1,4 +1,4 @@
-package org.yzr.utils;
+package org.yzr.utils.image;
 
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;

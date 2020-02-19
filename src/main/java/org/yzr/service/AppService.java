@@ -1,20 +1,20 @@
 package org.yzr.service;
 
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.yzr.dao.AppDao;
+import org.yzr.dao.PackageDao;
+import org.yzr.dao.UserDao;
 import org.yzr.model.App;
 import org.yzr.model.Package;
-import org.yzr.utils.CodeGenerator;
-import org.yzr.utils.PathManager;
+import org.yzr.model.User;
+import org.yzr.utils.CharUtil;
+import org.yzr.utils.file.PathManager;
 import org.yzr.vo.AppViewModel;
-import org.yzr.vo.PackageViewModel;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,19 +24,25 @@ public class AppService {
     @Resource
     private AppDao appDao;
     @Resource
+    private UserDao userDao;
+    @Resource
+    private PackageDao packageDao;
+    @Resource
     private PathManager pathManager;
 
     @Transactional
-    public App save(App app) {
-        App app1 = this.appDao.save(app);
-        app1.getCurrentPackage();
+    public App save(App app, User user) {
+        user = this.userDao.findById(user.getId()).get();
+        app.setOwner(user);
+        app = this.appDao.save(app);
+        app.getCurrentPackage();
         try {
             // 触发级联查询
-            app1.getWebHookList().forEach(webHook -> {});
+            app.getWebHookList().forEach(webHook -> {
+            });
         } catch (Exception e) {
-            e.printStackTrace();
         }
-        return app1;
+        return app;
     }
 
     @Transactional
@@ -55,7 +61,8 @@ public class AppService {
         Optional<App> optionalApp = this.appDao.findById(appID);
         App app = optionalApp.get();
         if (app != null) {
-            app.getPackageList().forEach(aPackage -> {});
+            app.getPackageList().forEach(aPackage -> {
+            });
             AppViewModel appViewModel = new AppViewModel(app, this.pathManager, true);
             return appViewModel;
         }
@@ -63,25 +70,29 @@ public class AppService {
     }
 
     @Transactional
-    public App getByPackage(Package aPackage) {
-        App app = this.appDao.get(aPackage.getBundleID(), aPackage.getPlatform());
+    public App savePackage(Package aPackage, User user) {
+        aPackage = this.packageDao.save(aPackage);
+        user = this.userDao.findByUsername(user.getUsername());
+        App app = this.appDao.getByBundleIDAndPlatformAndOwner(aPackage.getBundleID(), aPackage.getPlatform(), user);
         if (app == null) {
             app = new App();
-            String shortCode = CodeGenerator.generate(4);
+            String shortCode = CharUtil.generate(4);
             while (this.appDao.findByShortCode(shortCode) != null) {
-                shortCode = CodeGenerator.generate(4);
+                shortCode = CharUtil.generate(4);
             }
             BeanUtils.copyProperties(aPackage, app);
             app.setShortCode(shortCode);
+            app.setOwner(user);
         } else {
-            app.setName(aPackage.getName());
-            // 触发级联查询
-            app.getPackageList().forEach(p->{});
+            // 级联查询
+            app.getPackageList().forEach(aPackage1 -> {
+            });
             app.getWebHookList().forEach(webHook -> {});
         }
-        if (app.getPackageList() == null) {
-            app.setPackageList(new ArrayList<>());
-        }
+        app.setName(aPackage.getName());
+        app.getPackageList().add(aPackage);
+        app.setCurrentPackage(aPackage);
+        app = this.appDao.save(app);
         return app;
     }
 
@@ -94,11 +105,11 @@ public class AppService {
             String path = PathManager.getAppPath(app);
             PathManager.deleteDirectory(path);
         }
-
     }
 
     /**
      * 通过 code 和 packageId 查询
+     *
      * @param code
      * @param packageId
      * @return
@@ -108,5 +119,16 @@ public class AppService {
         App app = this.appDao.findByShortCode(code);
         AppViewModel viewModel = new AppViewModel(app, pathManager, packageId);
         return viewModel;
+    }
+
+    @Transactional
+    public List<AppViewModel> findByUser(User user) {
+        Iterable<App> apps = this.appDao.findByUser(user);
+        List<AppViewModel> list = new ArrayList<>();
+        for (App app : apps) {
+            AppViewModel appViewModel = new AppViewModel(app, this.pathManager, false);
+            list.add(appViewModel);
+        }
+        return list;
     }
 }

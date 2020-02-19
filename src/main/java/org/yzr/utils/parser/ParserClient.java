@@ -10,7 +10,7 @@ public class ParserClient {
      * @param filePath 文件路径
      * @return
      */
-    public static Package parse(String filePath) {
+    public static Package parse(String filePath) throws ClassNotFoundException {
         PackageParser parser = getParser(filePath);
         if (parser != null) {
             return parser.parse(filePath);
@@ -23,11 +23,11 @@ public class ParserClient {
      * @param filePath
      * @return
      */
-    private static PackageParser getParser(String filePath) {
+    private static PackageParser getParser(String filePath) throws ClassNotFoundException {
         String extension = FilenameUtils.getExtension(filePath);
+        // 动态获取解析器
+        Class aClass = Class.forName("org.yzr.utils.parser." + extension.toUpperCase()+"Parser");
         try {
-            // 动态获取解析器
-            Class aClass = Class.forName("org.yzr.utils.parser." + extension.toUpperCase()+"Parser");
             PackageParser packageParser = (PackageParser)aClass.newInstance();
             return packageParser;
         } catch (Exception e) {

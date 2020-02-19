@@ -4,10 +4,11 @@ package org.yzr.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_app", uniqueConstraints = {@UniqueConstraint(columnNames={"platform", "bundleID"})})
+@Table(name = "tb_app", uniqueConstraints = {@UniqueConstraint(columnNames = {"platform", "bundleID", "userId"})})
 public class App {
     // 主键
     @Id
@@ -36,8 +37,11 @@ public class App {
     private List<WebHook> webHookList;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     // 当前包
-    @JoinColumn(name = "currentID",referencedColumnName = "id")
-    private  Package currentPackage;
+    @JoinColumn(name = "currentID", referencedColumnName = "id")
+    private Package currentPackage;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User owner;
 
     public String getId() {
         return id;
@@ -96,6 +100,9 @@ public class App {
     }
 
     public List<Package> getPackageList() {
+        if (packageList == null) {
+            this.packageList = new ArrayList<>();
+        }
         return packageList;
     }
 
@@ -117,5 +124,13 @@ public class App {
 
     public void setCurrentPackage(Package currentPackage) {
         this.currentPackage = currentPackage;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

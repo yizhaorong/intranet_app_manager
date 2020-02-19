@@ -3,70 +3,23 @@ package org.yzr.utils.parser;
 import com.dd.plist.NSDate;
 import org.apache.commons.io.FileUtils;
 import org.yzr.model.Package;
-import org.yzr.utils.PNGConverter;
-import org.yzr.utils.PathManager;
-import org.yzr.utils.ZipUtils;
-import org.yzr.utils.ipa.Plist;
 import org.yzr.model.Provision;
+import org.yzr.utils.file.PathManager;
+import org.yzr.utils.file.ZipUtil;
+import org.yzr.utils.image.PNGConverter;
+import org.yzr.utils.ipa.InfoPlist;
+import org.yzr.utils.ipa.Plist;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.time.ZoneId;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class IPAParser implements PackageParser {
-    @Override
-    public Package parse(String filePath) {
-        try {
-            Package aPackage = new Package();
-            // 解压 IPA 包
-            String targetPath = ZipUtils.unzip(filePath);
-            String appPath = appPath(targetPath);
-            String infoPlistPath = appPath + File.separator + "Info.plist";
-            infoPlistPath = infoPlistPath.replaceAll("//", "/");
-            File infoPlistFile  = new File(infoPlistPath);
-            // Plist 文件获取失败
-            if (!infoPlistFile.exists()) return null;
-            // 获取 infoPlist
-            Plist infoPlist = Plist.parseWithFile(infoPlistFile);
-            File ipaFile = new File(filePath);
-            long currentTimeMillis = System.currentTimeMillis();
-
-            aPackage.setSize(ipaFile.length());
-            aPackage.setName(infoPlist.stringValueForPath("CFBundleDisplayName"));
-            if (aPackage.getName() == null) {
-                aPackage.setName(infoPlist.stringValueForPath("CFBundleName"));
-            }
-            aPackage.setVersion(infoPlist.stringValueForPath("CFBundleShortVersionString"));
-            aPackage.setBuildVersion(infoPlist.stringValueForPath("CFBundleVersion"));
-            aPackage.setBundleID(infoPlist.stringValueForPath("CFBundleIdentifier"));
-            aPackage.setMinVersion(infoPlist.stringValueForPath("MinimumOSVersion"));
-            aPackage.setCreateTime(currentTimeMillis);
-            aPackage.setPlatform("ios");
-
-            // 获取应用图标
-            String iconName = infoPlist.stringValueForKeyPath("CFBundleIcons.CFBundlePrimaryIcon.CFBundleIconName");
-            if (iconName == null) {
-                iconName = infoPlist.stringValueForKeyPath("CFBundleIconFile");
-            }
-            String iconPath = appIcon(appPath, iconName);
-            String iconTempPath = PathManager.getTempIconPath(aPackage);
-            PNGConverter.convert(iconPath, iconTempPath);
-
-            // 解析 Provision
-            aPackage.setProvision(getProvision(appPath));
-
-            // 清除目录
-            FileUtils.deleteDirectory(new File(targetPath));
-            return aPackage;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     /*获取 APP 路径*/
     private static String appPath(String path) {
         try {
@@ -96,7 +49,7 @@ public class IPAParser implements PackageParser {
         File appFile = new File(appPath);
         File[] listFiles = appFile.listFiles();
         for (File file : listFiles) {
-            String pattern = iconName + "[4,6]0x[4,6]0@[2,3]?x.png";
+            String pattern = iconName + "([4,6]0x[4,6]0)?(@[2,3]x)?(\\.png)?";
             boolean isMatch = Pattern.matches(pattern, file.getName());
             if (isMatch) {
                 iconNames.add(file.getName());
@@ -113,10 +66,17 @@ public class IPAParser implements PackageParser {
     private static Provision getProvision(String appPath) {
         Provision provision = new Provision();
         String profile = appPath + File.separator + "embedded.mobileprovision";
+        File profileFile = new File(profile);
+        // 文件不存在
+        if (!profileFile.exists()) {
+            provision.setType("Release");
+            return provision;
+        }
+
         try {
             boolean started = false;
             boolean ended = false;
-            BufferedReader reader = new BufferedReader(new FileReader(profile));
+            BufferedReader reader = new BufferedReader(new FileReader(profileFile));
             StringBuffer plist = new StringBuffer();
             String str = null;
             while ((str = reader.readLine()) != null) {
@@ -125,7 +85,7 @@ public class IPAParser implements PackageParser {
                     plist.append("</plist>").append("\n");
                 } else if (started && !ended) {
                     plist.append(str).append("\n");
-                } else  if (str.contains("<?xml")) {
+                } else if (str.contains("<?xml")) {
                     started = true;
                     plist.append(str.substring(str.indexOf("<?xml"))).append("\n");
                 }
@@ -140,13 +100,59 @@ public class IPAParser implements PackageParser {
             provision.setDeviceCount(devices.length);
             provision.setTeamName(provisionFile.stringValueForPath("TeamName"));
             provision.setTeamID(provisionFile.arrayValueForPath("TeamIdentifier").get(0));
-            provision.setCreateDate(((NSDate)provisionFile.valueForKeyPath("CreationDate")).getDate());
-            provision.setExpirationDate(((NSDate)provisionFile.valueForKeyPath("ExpirationDate")).getDate());
+            long createDate =((NSDate) provisionFile.valueForKeyPath("CreationDate")).getDate().getTime();
+            provision.setCreateDate(createDate);
+            long expirationDate = ((NSDate) provisionFile.valueForKeyPath("ExpirationDate")).getDate().getTime();
+            provision.setExpirationDate(expirationDate);
             provision.setUUID(provisionFile.stringValueForPath("UUID"));
             provision.setType(provision.getDeviceCount() > 0 ? "AdHoc" : "Release");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return provision;
+    }
+
+    @Override
+    public Package parse(String filePath) {
+        try {
+            Package aPackage = new Package();
+            // 解压 IPA 包
+            String targetPath = ZipUtil.unzip(filePath);
+            String appPath = appPath(targetPath);
+            String infoPlistPath = appPath + File.separator + "Info.plist";
+            infoPlistPath = infoPlistPath.replaceAll("//", "/");
+            File infoPlistFile = new File(infoPlistPath);
+            // Plist 文件获取失败
+            if (!infoPlistFile.exists()) return null;
+            // 获取 infoPlist
+            Plist plist = Plist.parseWithFile(infoPlistFile);
+            InfoPlist  infoPlist = new InfoPlist(plist);
+            File ipaFile = new File(filePath);
+
+            aPackage.setSize(ipaFile.length());
+            aPackage.setName(infoPlist.getAppName());
+            aPackage.setVersion(infoPlist.getVersion());
+            aPackage.setBuildVersion(infoPlist.getBuildVersion());
+            aPackage.setBundleID(infoPlist.getBundleID());
+            aPackage.setMinVersion(infoPlist.getMinimumOSVersion());
+            aPackage.setCreateTime(System.currentTimeMillis());
+            aPackage.setPlatform("ios");
+
+            // 获取应用图标
+            String iconName = infoPlist.getIconName();
+            String iconPath = appIcon(appPath, iconName);
+            String iconTempPath = PathManager.getTempIconPath(aPackage);
+            PNGConverter.convert(iconPath, iconTempPath);
+
+            // 解析 Provision
+            aPackage.setProvision(getProvision(appPath));
+
+            // 清除目录
+            FileUtils.deleteDirectory(new File(targetPath));
+            return aPackage;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
