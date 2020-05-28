@@ -1,15 +1,23 @@
 package org.yzr.storage;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 import org.yzr.model.Storage;
 import org.yzr.utils.CharUtil;
 import org.yzr.utils.file.FileType;
 import org.yzr.utils.file.FileUtil;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -37,6 +45,47 @@ public class StorageUtil {
         this.storage = storage;
     }
 
+
+    /**
+     * 检测并转存文件
+     * @param inputStream
+     * @param contentLength
+     * @param contentType
+     * @param fileName
+     * @return
+     */
+    public static String checkAndTransfer(InputStream inputStream, long contentLength, String contentType, String fileName) {
+        // 判断文件类型
+        if (!(contentType != null && contentType.equalsIgnoreCase("application/octet-stream"))) {
+            return null;
+        }
+        int len = 28;
+        PushbackInputStream pushbackInputStream = new PushbackInputStream(inputStream, len);
+        try {
+            byte[] b = new byte[len];
+            FileType type = FileUtil.getType(pushbackInputStream);
+            // ipa和apk文件都是zip文件
+            if (type != FileType.ZIP) {
+                pushbackInputStream.close();
+                return null;
+            }
+            pushbackInputStream.unread(b);
+            // 获取文件后缀
+            String ext = FilenameUtils.getExtension(fileName);
+            // 生成文件名
+            String newFileName = UUID.randomUUID().toString() + "." + ext;
+            // 转存到 tmp
+            String destPath = FileUtils.getTempDirectoryPath() + File.separator + newFileName;
+            destPath = destPath.replaceAll("//", "/");
+            System.out.println(destPath);
+            Files.copy(pushbackInputStream, Paths.get(destPath), StandardCopyOption.REPLACE_EXISTING);
+            return destPath;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * 存储一个文件对象
      *
@@ -46,6 +95,7 @@ public class StorageUtil {
      * @param fileName      文件索引名
      */
     public Storage store(InputStream inputStream, long contentLength, String contentType, String fileName) {
+        // 判断文件类型
         if (!(contentType != null && contentType.equalsIgnoreCase("application/octet-stream"))) {
             return null;
         }
@@ -55,6 +105,7 @@ public class StorageUtil {
         try {
             byte[] b = new byte[len];
             FileType type = FileUtil.getType(pushbackInputStream);
+            // ipa和apk文件都是zip文件
             if (type != FileType.ZIP) {
                 pushbackInputStream.close();
                 return null;

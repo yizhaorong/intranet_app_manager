@@ -30,13 +30,18 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+        // 不需要权限可以访问的页面
         filterChainDefinitionMap.put("/account/signin", "anon");
         filterChainDefinitionMap.put("/account/logout", "anon");
         filterChainDefinitionMap.put("/error/unauthorized", "anon");
 
+        // 需要授权访问的页面
         filterChainDefinitionMap.put("/apps/**", "authc");
+        // 登录页面
         shiroFilterFactoryBean.setLoginUrl("/account/signin");
+        // 成功后跳转页面
         shiroFilterFactoryBean.setSuccessUrl("/apps");
+        // 未授权页面
         shiroFilterFactoryBean.setUnauthorizedUrl("/error/unauthorized");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;

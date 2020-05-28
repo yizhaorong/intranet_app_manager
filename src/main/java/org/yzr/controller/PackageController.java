@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.yzr.model.App;
 import org.yzr.model.Package;
+import org.yzr.model.Storage;
 import org.yzr.model.User;
 import org.yzr.service.AppService;
 import org.yzr.service.PackageService;
+import org.yzr.service.StorageService;
 import org.yzr.service.UserService;
+import org.yzr.storage.StorageUtil;
 import org.yzr.utils.file.FileType;
 import org.yzr.utils.file.FileUtil;
 import org.yzr.utils.file.PathManager;
@@ -114,13 +117,11 @@ public class PackageController {
             if (user == null) {
                 return ResponseUtil.unauthz();
             }
-            String filePath = transfer(file);
-            FileType fileType = FileUtil.getType(filePath);
-            if (fileType == null || fileType != FileType.ZIP) {
-                // 文件类型错误
-                FileUtils.forceDelete(new File(filePath));
-                return ResponseUtil.badArgument();
+            String filePath = StorageUtil.checkAndTransfer(file.getInputStream(), file.getSize(), file.getContentType(), file.getOriginalFilename());
+            if (filePath == null) {
+                return ResponseUtil.fail(401, "不支持的文件类型");
             }
+
             Package aPackage = this.packageService.buildPackage(filePath, user);
             Map<String, String> extra = new HashMap<>();
             String jobName = request.getParameter("jobName");
