@@ -6,15 +6,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.yzr.model.Storage;
 import org.yzr.service.StorageService;
 import org.yzr.storage.StorageUtil;
 import org.yzr.utils.CharUtil;
+import org.yzr.utils.response.BaseResponse;
 import org.yzr.utils.response.ResponseUtil;
 
 import java.io.IOException;
@@ -44,10 +42,15 @@ public class StorageController {
     }
 
     @PostMapping("/upload")
-    public Object upload(@RequestParam("file") MultipartFile file) throws IOException {
+    @ResponseBody
+    public BaseResponse upload(@RequestParam("file") MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
-        Storage Storage = storageUtil.store(file.getInputStream(), file.getSize(), file.getContentType(), originalFilename);
-        return ResponseUtil.ok(Storage);
+        Storage storage = storageUtil.store(file.getInputStream(), file.getSize(), file.getContentType(), originalFilename);
+        if (storage != null) {
+            return ResponseUtil.ok(storage);
+        } else {
+            return ResponseUtil.fail(401, "不支持的文件类型");
+        }
     }
 
     /**

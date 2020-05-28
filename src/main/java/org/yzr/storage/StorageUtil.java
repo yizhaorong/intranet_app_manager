@@ -46,18 +46,25 @@ public class StorageUtil {
      * @param fileName      文件索引名
      */
     public Storage store(InputStream inputStream, long contentLength, String contentType, String fileName) {
+        if (!(contentType != null && contentType.equalsIgnoreCase("application/octet-stream"))) {
+            return null;
+        }
         String key = generateKey(fileName);
+        int len = 28;
+        PushbackInputStream pushbackInputStream = new PushbackInputStream(inputStream, len);
         try {
-            int len = 28;
             byte[] b = new byte[len];
-            FileType type = FileUtil.getType(input);
-            input.unread(b);
-            inputStream = input;
+            FileType type = FileUtil.getType(pushbackInputStream);
+            if (type != FileType.ZIP) {
+                pushbackInputStream.close();
+                return null;
+            }
+            pushbackInputStream.unread(b);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        storage.store(inputStream, contentLength, contentType, key);
+        storage.store(pushbackInputStream, contentLength, contentType, key);
 
         String url = generateUrl(key);
         Storage storageInfo = new Storage();
