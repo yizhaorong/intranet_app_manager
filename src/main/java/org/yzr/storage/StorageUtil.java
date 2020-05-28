@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.yzr.model.Storage;
 import org.yzr.utils.CharUtil;
+import org.yzr.utils.file.FileType;
+import org.yzr.utils.file.FileUtil;
 
 import java.io.InputStream;
+import java.io.PushbackInputStream;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -44,6 +47,16 @@ public class StorageUtil {
      */
     public Storage store(InputStream inputStream, long contentLength, String contentType, String fileName) {
         String key = generateKey(fileName);
+        try {
+            int len = 28;
+            byte[] b = new byte[len];
+            FileType type = FileUtil.getType(input);
+            input.unread(b);
+            inputStream = input;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         storage.store(inputStream, contentLength, contentType, key);
 
         String url = generateUrl(key);

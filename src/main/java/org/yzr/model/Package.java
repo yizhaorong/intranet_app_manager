@@ -34,7 +34,13 @@ public class Package {
     private String extra;
     // 文件名
     private String fileName;
+    // 源文件
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="source_file_id",referencedColumnName="id")
     private Storage sourceFile;
+    // 图标
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="icon_file_id",referencedColumnName="id")
     private Storage iconFile;
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "appId")
@@ -130,6 +136,22 @@ public class Package {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public Storage getSourceFile() {
+        return sourceFile;
+    }
+
+    public void setSourceFile(Storage sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+
+    public Storage getIconFile() {
+        return iconFile;
+    }
+
+    public void setIconFile(Storage iconFile) {
+        this.iconFile = iconFile;
     }
 
     public App getApp() {
