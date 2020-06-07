@@ -7,6 +7,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +53,10 @@ public class PackageController {
     private PathManager pathManager;
     @Resource
     private UserService userService;
+    @Resource
+    private StorageUtil storageUtil;
+    @Resource
+    private StorageService storageService;
 
     /**
      * 预览页
@@ -61,10 +68,10 @@ public class PackageController {
     @GetMapping("/s/{code}")
     public String get(@PathVariable("code") String code, HttpServletRequest request) {
         String id = request.getParameter("id");
-        AppViewModel viewModel = this.appService.findByCode(code, id);
+        AppViewModel viewModel = this.appService.findByCode(code, id, request);
         request.setAttribute("app", viewModel);
-        request.setAttribute("ca_path", this.pathManager.getCAPath());
-        request.setAttribute("basePath", this.pathManager.getBaseURL(false));
+        request.setAttribute("ca_path", PathManager.request(request).getCAPath());
+        request.setAttribute("basePath", PathManager.request(request).getBaseURL() + "/");
         return "install";
     }
 
@@ -77,7 +84,7 @@ public class PackageController {
      */
     @GetMapping("/devices/{id}")
     public String devices(@PathVariable("id") String id, HttpServletRequest request) {
-        PackageViewModel viewModel = this.packageService.findById(id);
+        PackageViewModel viewModel = this.packageService.findById(id, request);
         request.setAttribute("app", viewModel);
         return "devices";
     }
@@ -112,17 +119,16 @@ public class PackageController {
                 Subject currentUser = SecurityUtils.getSubject();
                 user = (User) currentUser.getPrincipal();
             }
-
             // 无用户信息不允许上传
             if (user == null) {
                 return ResponseUtil.unauthz();
             }
-            String filePath = StorageUtil.checkAndTransfer(file.getInputStream(), file.getSize(), file.getContentType(), file.getOriginalFilename());
+            // 检测文件
+            String filePath = storageUtil.checkAndTransfer(file.getInputStream(), file.getContentType(), file.getOriginalFilename());
             if (filePath == null) {
                 return ResponseUtil.fail(401, "不支持的文件类型");
             }
-
-            Package aPackage = this.packageService.buildPackage(filePath, user);
+            // 获取扩展参数
             Map<String, String> extra = new HashMap<>();
             String jobName = request.getParameter("jobName");
             String buildNumber = request.getParameter("buildNumber");
@@ -132,15 +138,13 @@ public class PackageController {
             if (StringUtils.hasLength(buildNumber)) {
                 extra.put("buildNumber", buildNumber);
             }
-            if (!extra.isEmpty()) {
-                aPackage.setExtra(JSON.toJSONString(extra));
-            }
-            App app = this.appService.savePackage(aPackage, user);
-            // URL
-            String codeURL = this.pathManager.getBaseURL(false) + "p/code/" + app.getCurrentPackage().getId();
-            // 发送WebHook消息
-            WebHookClient.sendMessage(app, pathManager);
-            return ResponseUtil.ok(codeURL);
+            Package aPackage = this.packageService.save(filePath, extra, user);
+//            App app = this.appService.savePackage(aPackage, user);
+//            // URL
+//            String codeURL = this.pathManager.getBaseURL(false) + "p/code/" + app.getCurrentPackage().getId();
+//            // 发送WebHook消息
+//            WebHookClient.sendMessage(app, pathManager);
+            return ResponseUtil.ok();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.badArgument();
@@ -154,34 +158,34 @@ public class PackageController {
      * @param response
      */
     @RequestMapping("/p/{id}")
-    public void download(@PathVariable("id") String id, HttpServletResponse response) {
+    public ResponseEntity<org.springframework.core.io.Resource> download(@PathVariable("id") String id, HttpServletResponse response) {
         try {
             Package aPackage = this.packageService.get(id);
-            String path = PathManager.getFullPath(aPackage) + aPackage.getFileName();
-            File file = new File(path);
-            if (file.exists()) { //判断文件父目录是否存在
-                response.setContentType("application/force-download");
-                // 文件名称转换
-                String fileName = aPackage.getName() + "_" + aPackage.getVersion();
-                String ext = "." + FilenameUtils.getExtension(aPackage.getFileName());
-                String appName = new String(fileName.getBytes("UTF-8"), "iso-8859-1");
-                response.setHeader("Content-Disposition", "attachment;fileName=" + appName + ext);
-
-                byte[] buffer = new byte[1024];
-                OutputStream os = response.getOutputStream();
-                FileInputStream fis = new FileInputStream(file);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                int i = bis.read(buffer);
-                while (i != -1) {
-                    os.write(buffer);
-                    i = bis.read(buffer);
-                }
-                bis.close();
-                fis.close();
+            String key = aPackage.getSourceFile().getKey();
+            Storage storage = storageService.findByKey(key);
+            if (key == null) {
+                return ResponseEntity.notFound().build();
             }
+            if (key.contains("../")) {
+                return ResponseEntity.badRequest().build();
+            }
+            String type = storage.getType();
+            MediaType mediaType = MediaType.parseMediaType(type);
+
+            org.springframework.core.io.Resource file = storageUtil.loadAsResource(key);
+            if (file == null) {
+                return ResponseEntity.notFound().build();
+            }
+            // 文件名称转换
+            String fileName = aPackage.getName() + "_" + aPackage.getVersion();
+            String ext = "." + FilenameUtils.getExtension(aPackage.getFileName());
+            String appName = new String(fileName.getBytes("UTF-8"), "iso-8859-1");
+            return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + appName + ext + "\"").body(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -191,9 +195,9 @@ public class PackageController {
      * @param response
      */
     @RequestMapping("/m/{id}")
-    public void getManifest(@PathVariable("id") String id, HttpServletResponse response) {
+    public void getManifest(@PathVariable("id") String id, HttpServletRequest request,  HttpServletResponse response) {
         try {
-            PackageViewModel viewModel = this.packageService.findById(id);
+            PackageViewModel viewModel = this.packageService.findById(id, request);
             if (viewModel != null && viewModel.isiOS()) {
                 response.setContentType("application/force-download");
                 response.setHeader("Content-Disposition", "attachment;fileName=manifest.plist");
@@ -212,9 +216,9 @@ public class PackageController {
      * @param response
      */
     @RequestMapping("/p/code/{id}")
-    public void getQrCode(@PathVariable("id") String id, HttpServletResponse response) {
+    public void getQrCode(@PathVariable("id") String id, HttpServletRequest request, HttpServletResponse response) {
         try {
-            PackageViewModel viewModel = this.packageService.findById(id);
+            PackageViewModel viewModel = this.packageService.findById(id, request);
             if (viewModel != null) {
                 response.setContentType("image/png");
                 QRCodeUtil.encode(viewModel.getPreviewURL()).withSize(250, 250).writeTo(response.getOutputStream());
@@ -242,31 +246,6 @@ public class PackageController {
             map.put("success", false);
         }
         return map;
-    }
-
-    /**
-     * 转存文件
-     *
-     * @param srcFile
-     * @return
-     */
-    private String transfer(MultipartFile srcFile) {
-        try {
-
-            // 获取文件后缀
-            String fileName = srcFile.getOriginalFilename();
-            String ext = FilenameUtils.getExtension(fileName);
-            // 生成文件名
-            String newFileName = UUID.randomUUID().toString() + "." + ext;
-            // 转存到 tmp
-            String destPath = FileUtils.getTempDirectoryPath() + File.separator + newFileName;
-            destPath = destPath.replaceAll("//", "/");
-            srcFile.transferTo(new File(destPath));
-            return destPath;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 }

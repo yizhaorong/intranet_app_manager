@@ -8,6 +8,7 @@ import org.yzr.model.App;
 import org.yzr.model.Package;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.InetAddress;
 
@@ -18,6 +19,23 @@ public class PathManager {
     private Environment environment;
     private String httpsBaseURL;
     private String httpBaseURL;
+    private String host;
+    private String scheme = "http";
+
+    public static PathManager request(HttpServletRequest request) {
+        PathManager pathManager = new PathManager();
+        pathManager.host = request.getHeader("host");
+        return pathManager;
+    }
+
+    public PathManager useHttps() {
+        this.scheme = "https";
+        return this;
+    }
+
+    public String getBaseURL() {
+        return this.scheme + "://" + this.host;
+    }
 
     /**
      * 获取图标的临时路径
@@ -111,55 +129,6 @@ public class PathManager {
     }
 
     /**
-     * 获取基础路径
-     *
-     * @param isHttps
-     * @return
-     */
-    public String getBaseURL(boolean isHttps) {
-        if (isHttps) {
-            if (httpsBaseURL != null) {
-                return httpsBaseURL;
-            }
-        } else {
-            if (httpBaseURL != null) {
-                return httpBaseURL;
-            }
-        }
-
-        try {
-            // URL
-            InetAddress address = InetAddress.getLocalHost();
-            String domain = environment.getProperty("server.domain");
-            if (domain == null) {
-                domain = address.getHostAddress();
-            }
-            int httpPort = Integer.parseInt(environment.getProperty("server.http.port"));
-            int httpsPort = Integer.parseInt(environment.getProperty("server.port"));
-            int port = isHttps ? httpsPort : httpPort;
-            String protocol = isHttps ? "https" : "http";
-            String portString = ":" + port;
-            if (port == 80 || port == 443) {
-                portString = "";
-            }
-
-            String baseURL = protocol + "://" + domain + portString + "/";
-
-            //解决重复读配置文件
-            if (isHttps) {
-                httpsBaseURL = baseURL;
-            } else {
-                httpBaseURL = baseURL;
-            }
-
-            return baseURL;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * 获取包所在路径
      *
      * @param aPackage
@@ -167,10 +136,12 @@ public class PathManager {
      * @return
      */
     public String getPackageResourceURL(Package aPackage, boolean isHttps) {
-        String baseURL = getBaseURL(isHttps);
-        String resourceURL = baseURL + aPackage.getPlatform() + "/" + aPackage.getBundleID()
-                + "/" + aPackage.getCreateTime() + "/";
-        return resourceURL;
+//        getBaseURL() + "/fetch/" + aPackage.getSourceFile().getKey();
+//        String baseURL = getBaseURL(isHttps);
+//        String resourceURL = baseURL + aPackage.getPlatform() + "/" + aPackage.getBundleID()
+//                + "/" + aPackage.getCreateTime() + "/";
+//        return resourceURL;
+        return null;
     }
 
     /**
@@ -179,6 +150,6 @@ public class PathManager {
      * @return
      */
     public String getCAPath() {
-        return getBaseURL(false) + "crt/ca.crt";
+        return getBaseURL() + "/crt/ca.crt";
     }
 }

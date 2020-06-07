@@ -72,6 +72,10 @@ public class UserController {
         if (!StringUtils.hasLength(username) || !StringUtils.hasLength(password)) {
             return ResponseUtil.badArgument();
         }
+        User u = this.userService.findByUsername(username);
+        if (u != null) {
+            return ResponseUtil.fail(100, username + "已被注册");
+        }
         user = this.userService.createUser(username, password);
         return login(request, username, password);
     }

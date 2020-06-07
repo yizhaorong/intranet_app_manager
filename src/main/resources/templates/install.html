@@ -37,7 +37,7 @@
               <div class="icon-container wrapper">
                 <i class="icon-icon_path bg-path"></i>
                 <span class="icon">
-                  <img th:src="@{'/' + ${app.icon}}" itemprop="image">
+                  <img th:src="${app.icon}" itemprop="image">
                 </span>
                 <span class="qrcode" id="qrcode" th:data="${app.currentPackage.previewURL}">
                 </span>

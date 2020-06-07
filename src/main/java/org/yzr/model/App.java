@@ -39,7 +39,7 @@ public class App {
     // 当前包
     @JoinColumn(name = "currentID", referencedColumnName = "id")
     private Package currentPackage;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User owner;
 

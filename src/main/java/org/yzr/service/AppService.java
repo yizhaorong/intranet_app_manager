@@ -5,15 +5,19 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.yzr.dao.AppDao;
 import org.yzr.dao.PackageDao;
+import org.yzr.dao.StorageDao;
 import org.yzr.dao.UserDao;
 import org.yzr.model.App;
 import org.yzr.model.Package;
+import org.yzr.model.Storage;
 import org.yzr.model.User;
+import org.yzr.storage.StorageUtil;
 import org.yzr.utils.CharUtil;
 import org.yzr.utils.file.PathManager;
 import org.yzr.vo.AppViewModel;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,10 @@ public class AppService {
     private PackageDao packageDao;
     @Resource
     private PathManager pathManager;
+    @Resource
+    private StorageDao storageDao;
+    @Resource
+    private StorageUtil storageUtil;
 
     @Transactional
     public App save(App app, User user) {
@@ -46,24 +54,32 @@ public class AppService {
     }
 
     @Transactional
-    public List<AppViewModel> findAll() {
+    public List<AppViewModel> findAll(HttpServletRequest request) {
         Iterable<App> apps = this.appDao.findAll();
         List<AppViewModel> list = new ArrayList<>();
         for (App app : apps) {
-            AppViewModel appViewModel = new AppViewModel(app, this.pathManager, false);
+            AppViewModel appViewModel = new AppViewModel(app, request, false);
             list.add(appViewModel);
         }
         return list;
     }
 
     @Transactional
-    public AppViewModel getById(String appID) {
+    public AppViewModel getById(String appID, User user, HttpServletRequest request) {
         Optional<App> optionalApp = this.appDao.findById(appID);
         App app = optionalApp.get();
+        if (!app.getOwner().getId().equalsIgnoreCase(user.getId())) {
+            return null;
+        }
+
         if (app != null) {
             app.getPackageList().forEach(aPackage -> {
+                try{
+                    aPackage.getSourceFile().getKey();
+                    aPackage.getIconFile().getKey();
+                } catch (Exception e) {}
             });
-            AppViewModel appViewModel = new AppViewModel(app, this.pathManager, true);
+            AppViewModel appViewModel = new AppViewModel(app, request, true);
             return appViewModel;
         }
         return null;
@@ -87,7 +103,8 @@ public class AppService {
             // 级联查询
             app.getPackageList().forEach(aPackage1 -> {
             });
-            app.getWebHookList().forEach(webHook -> {});
+            app.getWebHookList().forEach(webHook -> {
+            });
         }
         app.setName(aPackage.getName());
         app.getPackageList().add(aPackage);
@@ -100,7 +117,18 @@ public class AppService {
     public void deleteById(String id) {
         App app = this.appDao.findById(id).get();
         if (app != null) {
+            app.getPackageList().forEach(aPackage ->{
+                Storage iconFile = aPackage.getIconFile();
+                this.storageUtil.delete(iconFile.getKey());
+                this.storageDao.deleteById(iconFile.getId());
+                Storage sourceFile = aPackage.getSourceFile();
+                this.storageUtil.delete(sourceFile.getKey());
+                this.storageDao.deleteById(sourceFile.getId());
+                this.packageDao.deleteById(aPackage.getId());
+            });
             this.appDao.deleteById(id);
+
+
             // 消除整个 APP 目录
             String path = PathManager.getAppPath(app);
             PathManager.deleteDirectory(path);
@@ -115,18 +143,18 @@ public class AppService {
      * @return
      */
     @Transactional
-    public AppViewModel findByCode(String code, String packageId) {
+    public AppViewModel findByCode(String code, String packageId, HttpServletRequest request) {
         App app = this.appDao.findByShortCode(code);
-        AppViewModel viewModel = new AppViewModel(app, pathManager, packageId);
+        AppViewModel viewModel = new AppViewModel(app, request, packageId);
         return viewModel;
     }
 
     @Transactional
-    public List<AppViewModel> findByUser(User user) {
+    public List<AppViewModel> findByUser(User user, HttpServletRequest request) {
         Iterable<App> apps = this.appDao.findByUser(user);
         List<AppViewModel> list = new ArrayList<>();
         for (App app : apps) {
-            AppViewModel appViewModel = new AppViewModel(app, this.pathManager, false);
+            AppViewModel appViewModel = new AppViewModel(app, request, false);
             list.add(appViewModel);
         }
         return list;

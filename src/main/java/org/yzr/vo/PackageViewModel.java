@@ -7,6 +7,7 @@ import org.yzr.model.Package;
 import org.yzr.utils.date.DateUtil;
 import org.yzr.utils.file.PathManager;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -36,10 +37,11 @@ public class PackageViewModel {
     private int deviceCount;
     private String message;
 
-    public PackageViewModel(Package aPackage, PathManager pathManager) {
-        this.downloadURL = pathManager.getBaseURL(false) + "p/" + aPackage.getId();
-        this.safeDownloadURL = pathManager.getBaseURL(true) + "p/" + aPackage.getId();
-        this.iconURL = pathManager.getPackageResourceURL(aPackage, true) + "icon.png";
+    public PackageViewModel(Package aPackage, HttpServletRequest request) {
+        String httpURL = PathManager.request(request).getBaseURL();
+        String httpsURL = PathManager.request(request).useHttps().getBaseURL();
+        this.downloadURL = httpURL + "/p/" + aPackage.getId();
+        this.safeDownloadURL = httpsURL + "/p/" + aPackage.getId();
         this.id = aPackage.getId();
         this.version = aPackage.getVersion();
         this.bundleID = aPackage.getBundleID();
@@ -52,7 +54,7 @@ public class PackageViewModel {
         this.displayTime = displayTime;
         if (aPackage.getPlatform().equals("ios")) {
             this.iOS = true;
-            String url = pathManager.getBaseURL(true) + "m/" + aPackage.getId();
+            String url = httpsURL + "/m/" + aPackage.getId();
             try {
                 this.installURL = "itms-services://?action=download-manifest&url=" + URLEncoder.encode(url, "utf-8");
             } catch (Exception e) {
@@ -60,9 +62,9 @@ public class PackageViewModel {
             }
         } else if (aPackage.getPlatform().equals("android")) {
             this.iOS = false;
-            this.installURL = pathManager.getPackageResourceURL(aPackage, false) + aPackage.getFileName();
+            this.installURL = httpURL + "/p/" + aPackage.getId();
         }
-        this.previewURL = pathManager.getBaseURL(false) + "s/" + aPackage.getApp().getShortCode() + "?id=" + aPackage.getId();
+        this.previewURL = httpURL + "/s/" + aPackage.getApp().getShortCode() + "?id=" + aPackage.getId();
         if (this.isiOS()) {
             if (aPackage.getProvision() == null) {
                 this.type = "内测版";
@@ -96,6 +98,9 @@ public class PackageViewModel {
             }
         }
         this.message = message;
+        try {
+            this.iconURL = httpsURL + "/fetch/" + aPackage.getIconFile().getKey();
+        } catch (Exception e){}
     }
 
     public String getDownloadURL() {

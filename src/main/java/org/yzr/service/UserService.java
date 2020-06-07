@@ -109,12 +109,15 @@ public class UserService {
         user.setPassword(encoder.encode(password));
         user.setCreateTime(System.currentTimeMillis());
 
-        Role role = this.roleDao.findByName("管理员");
-        Set<Role> roleList = new HashSet<>();
-        roleList.add(role);
-        user.setRoleList(roleList);
-        updateToken(user);
-        this.userDao.save(user);
+        List<Role> adminList = this.roleDao.findByName("管理员");
+        if (adminList != null && adminList.size() > 0) {
+            Role role = adminList.get(0);
+            Set<Role> roleList = new HashSet<>();
+            roleList.add(role);
+            user.setRoleList(roleList);
+            updateToken(user);
+            this.userDao.save(user);
+        }
         return user;
     }
 
@@ -125,22 +128,38 @@ public class UserService {
         if (this.userDao.findByUsername(username) == null) {
             long currentTime = System.currentTimeMillis();
             Role role = new Role();
-            role.setCreateTime(currentTime);
-            role.setDescription("管理员");
-            role.setName("管理员");
-            role.setEnabled(true);
-            this.roleDao.save(role);
-
+            List<Role> adminList = this.roleDao.findByName("管理员");
+            if (adminList != null && adminList.size() > 0) {
+                role = adminList.get(0);
+            } else {
+                role.setCreateTime(currentTime);
+                role.setDescription("管理员");
+                role.setName("管理员");
+                role.setEnabled(true);
+                this.roleDao.save(role);
+            }
             List<Permission> permissionList = new ArrayList<>();
             String[] perms = new String[]{
                     "/apps",
                     "/apps/get",
-//                    "/apps/delete",
+                    "/apps/delete",
                     "/packageList/get"
             };
             for (String string : perms) {
-                Permission permission = new Permission();
-                permission.setCreateTime(currentTime);
+                Permission permission = null;
+                List<Permission> permissions = this.permissionDao.findByPermission(string, role.getId());
+                if (permissions != null) {
+                    for (int i = 0; i < permissions.size(); i++) {
+                        if (permissions.get(i).getRole().getId().equalsIgnoreCase(role.getId())) {
+                            permission = permissions.get(i);
+                            break;
+                        }
+                    }
+                }
+                if (permission == null) {
+                    permission = new Permission();
+                    permission.setCreateTime(currentTime);
+                }
                 permission.setPermission(string);
                 permission.setUpdateTime(currentTime);
                 permission.setRole(role);
@@ -161,5 +180,9 @@ public class UserService {
             updateToken(user);
             this.userDao.save(user);
         }
+    }
+
+    public User findByUsername(String username) {
+        return this.userDao.findByUsername(username);
     }
 }

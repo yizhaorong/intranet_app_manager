@@ -51,8 +51,8 @@ public class DingDingWebHook implements IWebHook {
         }
         Map<String, Object> markdown = new HashMap<>();
         markdown.put("title", app.getName());
-        String currentPackageURL = pathManager.getBaseURL(false) + "s/" + app.getShortCode() + "?id=" + app.getCurrentPackage().getId();
-        String appURL = pathManager.getBaseURL(false) + "apps/" + app.getId();
+        String currentPackageURL = "/s/" + app.getShortCode() + "?id=" + app.getCurrentPackage().getId();
+        String appURL = "/apps/" + app.getId();
         String platform = "iOS";
         if (app.getPlatform().equalsIgnoreCase("android")) {
             platform = "Android";

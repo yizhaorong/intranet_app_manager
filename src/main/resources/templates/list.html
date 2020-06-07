@@ -57,7 +57,7 @@
       <div class="banner has-devices">
         <div class="middle-wrapper clearfix">
           <div id="app-activity-icon" class="pull-left icon-container appicon">
-            <img th:src="'/' + ${package.icon}" width="100" height="100" class="change_icon ng-isolate-scope" />
+            <img th:src="${package.icon}" width="100" height="100" class="change_icon ng-isolate-scope" />
           </div>
           <div class="badges">
             <span tooltip-top="" tooltip="复制到剪贴板" id="js-app-short-copy-trigger"
@@ -122,7 +122,7 @@
                 应用图标
               </div>
               <div class="icon_select unploadIcon appicon" style="width: 100px; cursor: pointer">
-                <img width="100" height="100" id="icon_img" style="border-radius: 17%" class="change_icon ng-isolate-scope" th:src="'/' + ${package.icon}">
+                <img width="100" height="100" id="icon_img" style="border-radius: 17%" class="change_icon ng-isolate-scope" th:src="${package.icon}">
               </div>
             </div>
             <div class="field app-deletion">
