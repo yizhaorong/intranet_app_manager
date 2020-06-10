@@ -121,7 +121,7 @@ java -jar intranet_app_manager-1.0.0.jar
 
 ```shell
 # 上传到APP管理平台
-result=$(curl -F "file=@$WORKSPACE/build/Ewt360_debug/Ewt360.ipa" http://172.16.241.203/app/upload)
+result=$(curl -F "file=@$WORKSPACE/build/Ewt360_debug/Ewt360.ipa" -F "token=ec7551847a2faa3988172e648d554c20" http://172.16.241.203/app/upload)
 code_url=$(echo $result | sed 's/.*\(http.*\)",.*/\1/g')
 echo "code_url="$code_url > $WORKSPACE/code.txt
 ```

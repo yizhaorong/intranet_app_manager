@@ -39,6 +39,7 @@ public class AppController {
             List<AppViewModel> apps = this.appService.findByUser(user, request);
             request.setAttribute("apps", apps);
             request.setAttribute("baseURL", PathManager.request(request).getBaseURL());
+            request.setAttribute("token", user.getToken());
         } catch (Exception e) {
             e.printStackTrace();
         }
