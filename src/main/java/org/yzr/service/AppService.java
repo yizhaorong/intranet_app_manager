@@ -2,13 +2,11 @@ package org.yzr.service;
 
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.yzr.dao.AppDao;
 import org.yzr.dao.PackageDao;
-import org.yzr.dao.StorageDao;
 import org.yzr.dao.UserDao;
 import org.yzr.model.App;
 import org.yzr.model.Package;
@@ -27,7 +25,10 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AppService {
@@ -38,11 +39,9 @@ public class AppService {
     @Resource
     private PackageDao packageDao;
     @Resource
-    private PathManager pathManager;
-    @Resource
-    private StorageDao storageDao;
-    @Resource
     private StorageUtil storageUtil;
+    @Resource
+    private PackageService packageService;
 
     @Transactional
     public App save(App app, User user) {
@@ -125,20 +124,9 @@ public class AppService {
         App app = this.appDao.findById(id).get();
         if (app != null) {
             app.getPackageList().forEach(aPackage -> {
-                Storage iconFile = aPackage.getIconFile();
-                this.storageUtil.delete(iconFile.getKey());
-                this.storageDao.deleteById(iconFile.getId());
-                Storage sourceFile = aPackage.getSourceFile();
-                this.storageUtil.delete(sourceFile.getKey());
-                this.storageDao.deleteById(sourceFile.getId());
-                this.packageDao.deleteById(aPackage.getId());
+                this.packageService.deletePackage(aPackage);
             });
             this.appDao.deleteById(id);
-
-
-            // 消除整个 APP 目录
-            String path = PathManager.getAppPath(app);
-            PathManager.deleteDirectory(path);
         }
     }
 

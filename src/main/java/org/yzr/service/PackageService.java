@@ -1,33 +1,23 @@
 package org.yzr.service;
 
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.yzr.dao.AppDao;
 import org.yzr.dao.PackageDao;
+import org.yzr.dao.StorageDao;
 import org.yzr.dao.UserDao;
-import org.yzr.model.App;
 import org.yzr.model.Package;
 import org.yzr.model.Storage;
 import org.yzr.model.User;
 import org.yzr.storage.StorageUtil;
-import org.yzr.utils.CharUtil;
-import org.yzr.utils.file.FileType;
 import org.yzr.utils.file.PathManager;
-import org.yzr.utils.image.ImageUtils;
 import org.yzr.utils.parser.ParserClient;
 import org.yzr.vo.PackageViewModel;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class PackageService {
@@ -35,13 +25,9 @@ public class PackageService {
     @Resource
     private PackageDao packageDao;
     @Resource
-    private PathManager pathManager;
-    @Resource
-    private UserDao userDao;
-    @Resource
-    private AppDao appDao;
-    @Resource
     private StorageUtil storageUtil;
+    @Resource
+    private StorageDao storageDao;
 
     @Transactional
     public Package save(Package aPackage) {
@@ -67,13 +53,22 @@ public class PackageService {
     @Transactional
     public void deleteById(String id) {
         Package aPackage = this.packageDao.findById(id).get();
-        if (aPackage != null) {
-            this.packageDao.deleteById(id);
-            String path = PathManager.getFullPath(aPackage);
-            PathManager.deleteDirectory(path);
-        }
-
+        deletePackage(aPackage);
     }
+
+    @Transactional
+    public void deletePackage(Package aPackage) {
+        if (aPackage != null) {
+            Storage iconFile = aPackage.getIconFile();
+            this.storageUtil.delete(iconFile.getKey());
+            this.storageDao.deleteById(iconFile.getId());
+            Storage sourceFile = aPackage.getSourceFile();
+            this.storageUtil.delete(sourceFile.getKey());
+            this.storageDao.deleteById(sourceFile.getId());
+            this.packageDao.deleteById(aPackage.getId());
+        }
+    }
+
     @Transactional
     public Package save(String filePath, Map<String, String> extra, User user) throws Exception {
         Package aPackage = ParserClient.parse(filePath);

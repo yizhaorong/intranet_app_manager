@@ -27,8 +27,6 @@ public class AppController {
 
     @Resource
     private AppService appService;
-    @Resource
-    private PathManager pathManager;
 
     @RequiresAuthentication
     @GetMapping("/apps")

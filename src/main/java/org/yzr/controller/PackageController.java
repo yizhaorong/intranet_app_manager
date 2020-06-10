@@ -34,6 +34,7 @@ import org.yzr.vo.PackageViewModel;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
@@ -46,8 +47,6 @@ public class PackageController {
     private AppService appService;
     @Resource
     private PackageService packageService;
-    @Resource
-    private PathManager pathManager;
     @Resource
     private UserService userService;
     @Resource
@@ -231,7 +230,8 @@ public class PackageController {
             PackageViewModel viewModel = this.packageService.findById(id, request);
             if (viewModel != null) {
                 response.setContentType("image/png");
-                QRCodeUtil.encode(viewModel.getPreviewURL()).withSize(250, 250).writeTo(response.getOutputStream());
+                InputStream inputStream = storageUtil.loadAsResource(viewModel.getIconKey()).getInputStream();
+                QRCodeUtil.encode(viewModel.getPreviewURL()).withSize(250, 250).withIcon(inputStream).writeTo(response.getOutputStream());
             }
         } catch (Exception e) {
             e.printStackTrace();

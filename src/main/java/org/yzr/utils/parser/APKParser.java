@@ -39,14 +39,12 @@ public class APKParser implements PackageParser {
             aPackage.setCreateTime(System.currentTimeMillis());
             int iconCount = apkFile.getAllIcons().size();
             if (iconCount > 0) {
-                IconFace icon = apkFile.getAllIcons().get(iconCount - 1);
-                String iconPath = PathManager.getTempIconPath(aPackage);
+                String iconPath = PathManager.getTempFilePath("png");
                 File iconFile = new File(iconPath);
+                IconFace icon = apkFile.getAllIcons().get(iconCount - 1);
                 FileUtils.writeByteArrayToFile(iconFile, icon.getData());
-                String sourceIconPath = PathManager.getTempFilePath("png");
-                PNGConverter.convert(iconPath, sourceIconPath);
                 Storage iconStorage = new Storage();
-                iconStorage.setUrl(sourceIconPath);
+                iconStorage.setUrl(iconPath);
                 aPackage.setIconFile(iconStorage);
             }
             apkFile.close();
