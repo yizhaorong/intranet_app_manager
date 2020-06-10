@@ -2,8 +2,10 @@ package org.yzr.utils.webhook;
 
 import org.yzr.model.App;
 import org.yzr.model.WebHook;
+import org.yzr.storage.StorageUtil;
 import org.yzr.utils.file.PathManager;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,9 +20,9 @@ public class WebHookClient {
     /**
      * 向 webHook 发送消息
      * @param app
-     * @param pathManager
+     * @param baseURL
      */
-    public static void sendMessage(App app, PathManager pathManager) {
+    public static void sendMessage(App app, String baseURL, StorageUtil storageUtil) {
         if (app.getWebHookList() == null || app.getWebHookList().size() < 1) {
             return;
         }
@@ -30,7 +32,7 @@ public class WebHookClient {
             String webHookType = webHook.getType();
             IWebHook iWebHook = getWebHook(webHookType);
             if (iWebHook != null) {
-                iWebHook.sendMessage(app, pathManager);
+                iWebHook.sendMessage(app, baseURL, storageUtil);
             }
         }
     }

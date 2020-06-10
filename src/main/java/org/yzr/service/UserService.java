@@ -142,7 +142,7 @@ public class UserService {
             String[] perms = new String[]{
                     "/apps",
                     "/apps/get",
-                    "/apps/delete",
+                    "/app/delete",
                     "/packageList/get"
             };
             for (String string : perms) {

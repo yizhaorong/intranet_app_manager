@@ -4,6 +4,7 @@ import com.dd.plist.NSDate;
 import org.apache.commons.io.FileUtils;
 import org.yzr.model.Package;
 import org.yzr.model.Provision;
+import org.yzr.model.Storage;
 import org.yzr.utils.file.PathManager;
 import org.yzr.utils.file.ZipUtil;
 import org.yzr.utils.image.PNGConverter;
@@ -13,9 +14,7 @@ import org.yzr.utils.ipa.Plist;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.time.ZoneId;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -141,8 +140,11 @@ public class IPAParser implements PackageParser {
             // 获取应用图标
             String iconName = infoPlist.getIconName();
             String iconPath = appIcon(appPath, iconName);
-            String iconTempPath = PathManager.getTempIconPath(aPackage);
-            PNGConverter.convert(iconPath, iconTempPath);
+            String sourceIconPath = PathManager.getTempFilePath("png");
+            PNGConverter.convert(iconPath, sourceIconPath);
+            Storage iconStorage = new Storage();
+            iconStorage.setUrl(sourceIconPath);
+            aPackage.setIconFile(iconStorage);
 
             // 解析 Provision
             aPackage.setProvision(getProvision(appPath));

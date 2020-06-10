@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.InetAddress;
+import java.util.UUID;
 
 @Component
 public class PathManager {
@@ -52,6 +53,22 @@ public class PathManager {
         File dir = new File(path.toString());
         if (!dir.exists()) dir.mkdirs();
         path.append(File.separator).append(aPackage.getCreateTime()).append(".png");
+        return path.toString();
+    }
+
+    /**
+     * 获取临时文件路径
+     * @param ext 扩展名
+     * @return
+     */
+    public static String getTempFilePath(String ext) {
+        StringBuilder path = new StringBuilder();
+        path.append(FileUtils.getTempDirectoryPath());
+        // 如果目录不存在，创建目录
+        File dir = new File(path.toString());
+        if (!dir.exists()) dir.mkdirs();
+        path.append(UUID.randomUUID().toString());
+        path.append(".").append(ext);
         return path.toString();
     }
 

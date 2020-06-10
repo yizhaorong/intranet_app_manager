@@ -22,7 +22,6 @@ public class Storage {
     private String url;
     private long createTime;
     private long updateTime;
-    private Boolean deleted;
 
     public String getId() {
         return id;
@@ -86,13 +85,5 @@ public class Storage {
 
     public void setUpdateTime(long updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
     }
 }

@@ -32,8 +32,6 @@ public class Package {
     private String platform;
     // 扩展消息 (json格式)
     private String extra;
-    // 文件名
-    private String fileName;
     // 源文件
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="source_file_id",referencedColumnName="id")
@@ -128,14 +126,6 @@ public class Package {
 
     public void setExtra(String extra) {
         this.extra = extra;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
     }
 
     public Storage getSourceFile() {

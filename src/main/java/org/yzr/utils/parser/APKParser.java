@@ -5,7 +5,9 @@ import net.dongliu.apk.parser.bean.ApkMeta;
 import net.dongliu.apk.parser.bean.IconFace;
 import org.apache.commons.io.FileUtils;
 import org.yzr.model.Package;
+import org.yzr.model.Storage;
 import org.yzr.utils.file.PathManager;
+import org.yzr.utils.image.PNGConverter;
 
 import java.io.File;
 
@@ -41,6 +43,11 @@ public class APKParser implements PackageParser {
                 String iconPath = PathManager.getTempIconPath(aPackage);
                 File iconFile = new File(iconPath);
                 FileUtils.writeByteArrayToFile(iconFile, icon.getData());
+                String sourceIconPath = PathManager.getTempFilePath("png");
+                PNGConverter.convert(iconPath, sourceIconPath);
+                Storage iconStorage = new Storage();
+                iconStorage.setUrl(sourceIconPath);
+                aPackage.setIconFile(iconStorage);
             }
             apkFile.close();
             return aPackage;

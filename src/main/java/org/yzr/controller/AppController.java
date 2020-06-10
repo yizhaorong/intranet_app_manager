@@ -5,7 +5,10 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.yzr.model.User;
 import org.yzr.service.AppService;
 import org.yzr.utils.file.PathManager;
@@ -71,7 +74,7 @@ public class AppController {
         return map;
     }
 
-//    @RequiresPermissions("/app/delete")
+    @RequiresPermissions("/app/delete")
     @RequestMapping("/app/delete/{id}")
     @ResponseBody
     public BaseResponse deleteById(@PathVariable("id") String id, HttpServletRequest request) {

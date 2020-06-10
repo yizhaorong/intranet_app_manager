@@ -1,6 +1,9 @@
 package org.yzr.service;
 
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.yzr.dao.AppDao;
@@ -14,14 +17,17 @@ import org.yzr.model.User;
 import org.yzr.storage.StorageUtil;
 import org.yzr.utils.CharUtil;
 import org.yzr.utils.file.PathManager;
+import org.yzr.utils.image.ImageUtils;
+import org.yzr.utils.parser.ParserClient;
 import org.yzr.vo.AppViewModel;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class AppService {
@@ -74,10 +80,11 @@ public class AppService {
 
         if (app != null) {
             app.getPackageList().forEach(aPackage -> {
-                try{
+                try {
                     aPackage.getSourceFile().getKey();
                     aPackage.getIconFile().getKey();
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             });
             AppViewModel appViewModel = new AppViewModel(app, request, true);
             return appViewModel;
@@ -117,7 +124,7 @@ public class AppService {
     public void deleteById(String id) {
         App app = this.appDao.findById(id).get();
         if (app != null) {
-            app.getPackageList().forEach(aPackage ->{
+            app.getPackageList().forEach(aPackage -> {
                 Storage iconFile = aPackage.getIconFile();
                 this.storageUtil.delete(iconFile.getKey());
                 this.storageDao.deleteById(iconFile.getId());
@@ -158,5 +165,77 @@ public class AppService {
             list.add(appViewModel);
         }
         return list;
+    }
+
+    @Transactional
+    public App addPackage(String filePath, Map<String, String> extra, User user) throws Exception {
+        // 1. 构建包
+        Package aPackage = ParserClient.parse(filePath);
+        // 2. 文件转存
+        storeFiles(filePath, aPackage);
+        // 获取包对应的APP是否存在
+        App app = getApp(user, aPackage);
+        // 3. 更新包信息
+        aPackage.setApp(app);
+        // 4. 更新包信息
+        aPackage = this.packageDao.save(aPackage);
+        // 5. 更新app信息
+        app.setName(aPackage.getName());
+        app.getPackageList().add(aPackage);
+        app.setCurrentPackage(aPackage);
+        this.appDao.save(app);
+        return app;
+    }
+
+    /**
+     * 获取APP信息
+     * @param user
+     * @param aPackage
+     * @return
+     */
+    @NotNull
+    private App getApp(User user, Package aPackage) {
+        App app = this.appDao.getByBundleIDAndPlatformAndOwner(aPackage.getBundleID(), aPackage.getPlatform(), user);
+        if (app == null) {
+            app = new App();
+            String shortCode = CharUtil.generate(4);
+            while (this.appDao.findByShortCode(shortCode) != null) {
+                shortCode = CharUtil.generate(4);
+            }
+            BeanUtils.copyProperties(aPackage, app);
+            app.setShortCode(shortCode);
+            // 获取用户信息
+            user = this.userDao.findById(user.getId()).get();
+            app.setOwner(user);
+        } else {
+            // 级联查询
+            app.getPackageList().forEach(aPackage1 -> {
+            });
+            app.getWebHookList().forEach(webHook -> {
+            });
+        }
+        return app;
+    }
+
+    /**
+     * 转存文件
+     * @param filePath
+     * @param aPackage
+     * @throws IOException
+     */
+    private void storeFiles(String filePath, Package aPackage) throws IOException {
+        // 2.1 源文件
+        File sourceFile = new File(filePath);
+        Storage storage = storageUtil.store(new FileInputStream(sourceFile), sourceFile.length(), "application/octet-stream", sourceFile.getName());
+        FileUtils.forceDelete(sourceFile);
+        aPackage.setSourceFile(storage);
+        // 2.2 图标文件
+        String iconFilePath = PathManager.getTempFilePath("png");
+        ImageUtils.resize(aPackage.getIconFile().getUrl(), iconFilePath, 192, 192);
+        File iconFile = new File(iconFilePath);
+        Storage iconStorage = storageUtil.store(new FileInputStream(iconFile), iconFile.length(), "application/png", iconFile.getName());
+        FileUtils.forceDelete(new File(aPackage.getIconFile().getUrl()));
+        FileUtils.forceDelete(iconFile);
+        aPackage.setIconFile(iconStorage);
     }
 }

@@ -156,13 +156,13 @@
         // 上传完成
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                var result = JSON.parse(xhr.response);
+                let result = JSON.parse(xhr.response);
                 console.log(result);
-                var success = result.code == 0;
+                let success = result.code == 0;
                 $.toast({text: result.msg, icon: success ? 'success' : 'error'});
                 if (success) {
-                    // window.location.href = window.location.href;
-                    // window.location.reload;
+                    window.location.href = window.location.href;
+                    window.location.reload;
                 }
 
             }

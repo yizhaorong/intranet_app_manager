@@ -77,65 +77,66 @@ public class PackageService {
     @Transactional
     public Package save(String filePath, Map<String, String> extra, User user) throws Exception {
         Package aPackage = ParserClient.parse(filePath);
-        String fileName = aPackage.getPlatform() + "." + FilenameUtils.getExtension(filePath);
-        // 更新文件名
-        aPackage.setFileName(fileName);
-        // 获取用户信息
-        user = this.userDao.findById(user.getId()).get();
-        // 设置用户信息
-        App app = this.appDao.getByBundleIDAndPlatformAndOwner(aPackage.getBundleID(), aPackage.getPlatform(), user);
-        if (app == null) {
-            app = new App();
-            String shortCode = CharUtil.generate(4);
-            while (this.appDao.findByShortCode(shortCode) != null) {
-                shortCode = CharUtil.generate(4);
-            }
-            BeanUtils.copyProperties(aPackage, app);
-            app.setShortCode(shortCode);
-            app.setOwner(user);
-        } else {
-            // 级联查询
-            app.getPackageList().forEach(aPackage1 -> {
-            });
-            app.getWebHookList().forEach(webHook -> {});
-        }
-        aPackage.setApp(app);
-        String packagePath = PathManager.getFullPath(aPackage);
-        String tempIconPath = PathManager.getTempIconPath(aPackage);
-        String sourcePath = packagePath + File.separator + fileName;
-        // 获取文件后缀
-        String ext = FilenameUtils.getExtension(fileName);
-        // 生成文件名
-        String newFileName = UUID.randomUUID().toString() + ".png";
-        // 转存到 tmp
-        String iconPath = FileUtils.getTempDirectoryPath() + File.separator + newFileName;
-        iconPath = iconPath.replaceAll("//", "/");
-
-        // 拷贝图标
-        ImageUtils.resize(tempIconPath, iconPath, 192, 192);
-        // 源文件
-        FileUtils.copyFile(new File(filePath), new File(sourcePath));
-
-        // 删除临时图标
-        FileUtils.forceDelete(new File(tempIconPath));
-        // 源文件
-        FileUtils.forceDelete(new File(filePath));
-        File sourceFile = new File(sourcePath);
-        File iconFile = new File(iconPath);
-        Storage storage = storageUtil.store(new FileInputStream(sourceFile), sourceFile.length(), "application/octet-stream", fileName);
-        Storage iconStorage = storageUtil.store(new FileInputStream(iconFile), iconFile.length(), "application/x-png", iconFile.getName());
-        // 删除临时图标
-        FileUtils.forceDelete(sourceFile);
-        // 源文件
-        FileUtils.forceDelete(iconFile);
-        aPackage.setIconFile(iconStorage);
-        aPackage.setSourceFile(storage);
-        aPackage = this.packageDao.save(aPackage);
-
-        app.setName(aPackage.getName());
-        app.getPackageList().add(aPackage);
-        app.setCurrentPackage(aPackage);
-        this.appDao.save(app);
         return aPackage;
+//        String fileName = aPackage.getPlatform() + "." + FilenameUtils.getExtension(filePath);
+//        // 更新文件名
+//        aPackage.setFileName(fileName);
+//        // 获取用户信息
+//        user = this.userDao.findById(user.getId()).get();
+//        // 设置用户信息
+//        App app = this.appDao.getByBundleIDAndPlatformAndOwner(aPackage.getBundleID(), aPackage.getPlatform(), user);
+//        if (app == null) {
+//            app = new App();
+//            String shortCode = CharUtil.generate(4);
+//            while (this.appDao.findByShortCode(shortCode) != null) {
+//                shortCode = CharUtil.generate(4);
+//            }
+//            BeanUtils.copyProperties(aPackage, app);
+//            app.setShortCode(shortCode);
+//            app.setOwner(user);
+//        } else {
+//            // 级联查询
+//            app.getPackageList().forEach(aPackage1 -> {
+//            });
+//            app.getWebHookList().forEach(webHook -> {});
+//        }
+//        aPackage.setApp(app);
+//        String packagePath = PathManager.getFullPath(aPackage);
+//        String tempIconPath = PathManager.getTempIconPath(aPackage);
+//        String sourcePath = packagePath + File.separator + fileName;
+//        // 获取文件后缀
+//        String ext = FilenameUtils.getExtension(fileName);
+//        // 生成文件名
+//        String newFileName = UUID.randomUUID().toString() + ".png";
+//        // 转存到 tmp
+//        String iconPath = FileUtils.getTempDirectoryPath() + File.separator + newFileName;
+//        iconPath = iconPath.replaceAll("//", "/");
+//
+//        // 拷贝图标
+//        ImageUtils.resize(tempIconPath, iconPath, 192, 192);
+//        // 源文件
+//        FileUtils.copyFile(new File(filePath), new File(sourcePath));
+//
+//        // 删除临时图标
+//        FileUtils.forceDelete(new File(tempIconPath));
+//        // 源文件
+//        FileUtils.forceDelete(new File(filePath));
+//        File sourceFile = new File(sourcePath);
+//        File iconFile = new File(iconPath);
+//        Storage storage = storageUtil.store(new FileInputStream(sourceFile), sourceFile.length(), "application/octet-stream", fileName);
+//        Storage iconStorage = storageUtil.store(new FileInputStream(iconFile), iconFile.length(), "application/x-png", iconFile.getName());
+//        // 删除临时图标
+//        FileUtils.forceDelete(sourceFile);
+//        // 源文件
+//        FileUtils.forceDelete(iconFile);
+//        aPackage.setIconFile(iconStorage);
+//        aPackage.setSourceFile(storage);
+//        aPackage = this.packageDao.save(aPackage);
+//
+//        app.setName(aPackage.getName());
+//        app.getPackageList().add(aPackage);
+//        app.setCurrentPackage(aPackage);
+//        this.appDao.save(app);
+//        return aPackage;
     }
 }
