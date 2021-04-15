@@ -247,15 +247,14 @@ public class PackageController {
     @RequiresPermissions("/p/delete")
     @RequestMapping("/p/delete/{id}")
     @ResponseBody
-    public Map<String, Object> deleteById(@PathVariable("id") String id) {
+    public BaseResponse deleteById(@PathVariable("id") String id) {
         Map<String, Object> map = new HashMap<>();
         try {
             this.packageService.deleteById(id);
-            map.put("success", true);
+            return ResponseUtil.ok();
         } catch (Exception e) {
-            map.put("success", false);
+            return ResponseUtil.updatedDateExpired();
         }
-        return map;
     }
 
 }
