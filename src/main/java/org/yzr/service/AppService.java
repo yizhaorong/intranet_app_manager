@@ -214,16 +214,28 @@ public class AppService {
     private void storeFiles(String filePath, Package aPackage) throws IOException {
         // 2.1 源文件
         File sourceFile = new File(filePath);
-        Storage storage = storageUtil.store(new FileInputStream(sourceFile), sourceFile.length(), "application/octet-stream", sourceFile.getName());
-        FileUtils.forceDelete(sourceFile);
+        FileInputStream sourceFileInputStream =  new FileInputStream(sourceFile);
+        Storage storage = storageUtil.store(sourceFileInputStream, sourceFile.length(), "application/octet-stream", sourceFile.getName());
+        try{
+            sourceFileInputStream.close();
+          FileUtils.forceDelete(sourceFile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         aPackage.setSourceFile(storage);
         // 2.2 图标文件
         String iconFilePath = PathManager.getTempFilePath("png");
         ImageUtils.resize(aPackage.getIconFile().getUrl(), iconFilePath, 192, 192);
         File iconFile = new File(iconFilePath);
-        Storage iconStorage = storageUtil.store(new FileInputStream(iconFile), iconFile.length(), "application/png", iconFile.getName());
-        FileUtils.forceDelete(new File(aPackage.getIconFile().getUrl()));
-        FileUtils.forceDelete(iconFile);
+        FileInputStream iconFileInputStream = new FileInputStream(iconFile);
+        Storage iconStorage = storageUtil.store(iconFileInputStream, iconFile.length(), "application/png", iconFile.getName());
+        try {
+            iconFileInputStream.close();
+            FileUtils.forceDelete(new File(aPackage.getIconFile().getUrl()));
+            FileUtils.forceDelete(iconFile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         aPackage.setIconFile(iconStorage);
     }
 }
