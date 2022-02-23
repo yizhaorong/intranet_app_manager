@@ -1,0 +1,40 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      args:
+        JAR_FILE: build/libs/intranet_app_manager.jar
+      dockerfile: Dockerfile
+    container_name: web
+    networks:
+      - server
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+      - "8443:443"
+  mysql:
+    build: 
+      context: ./mysql
+    restart: always
+    container_name: docker_mysql
+    networks:
+      - server
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: app
+    volumes:
+      - ./mysql/init:/docker-entrypoint-initdb.d/
+      - ./mysql/sql:/opt/sql
+    ports:
+      - '3306:3306'
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4 
+      --collation-server=utf8mb4_unicode_ci
+networks:
+  server:
+    driver:
+      bridge

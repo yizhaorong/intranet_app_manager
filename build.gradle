@@ -14,7 +14,7 @@ configurations {
     runtimeClasspath {
         extendsFrom developmentOnly
     }
-    compileOnly {
+    implementationOnly {
         extendsFrom annotationProcessor
     }
 }
@@ -27,20 +27,20 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile group: 'org.apache.shiro', name: 'shiro-spring-boot-web-starter', version: '1.5.0'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
-    compile group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version: '3.1.0'
-    compile group: 'com.qiniu', name: 'qiniu-java-sdk', version: '7.2.28'
-    compile group: 'com.qcloud', name: 'cos_api', version: '5.6.15'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
-    compile group: 'com.googlecode.plist', name: 'dd-plist', version: '1.21'
-    compile group: 'net.dongliu', name: 'apk-parser', version: '2.6.9'
-    compile group: 'com.google.zxing', name: 'javase', version: '3.4.0'
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
-    compile group: 'com.jcraft', name: 'jzlib', version: '1.1.3'
-    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.28'
-    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.0.1'
-    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.59'
+    implementation group: 'org.apache.shiro', name: 'shiro-spring-boot-web-starter', version: '1.5.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
+    implementation group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version: '3.1.0'
+    implementation group: 'com.qiniu', name: 'qiniu-java-sdk', version: '7.2.28'
+    implementation group: 'com.qcloud', name: 'cos_api', version: '5.6.15'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
+    implementation group: 'com.googlecode.plist', name: 'dd-plist', version: '1.21'
+    implementation group: 'net.dongliu', name: 'apk-parser', version: '2.6.9'
+    implementation group: 'com.google.zxing', name: 'javase', version: '3.4.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation group: 'com.jcraft', name: 'jzlib', version: '1.1.3'
+    implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.28'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.0.1'
+    implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.59'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

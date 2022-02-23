@@ -1,0 +1,46 @@
+[ req ]
+distinguished_name=req_distinguished_name
+req_extensions=v3_req
+
+[ req_distinguished_name ]
+countryName=Country Name (2 letter code)
+countryName_default=CN
+stateOrProvinceName=State or Province Name (full name)
+stateOrProvinceName_default=ZheJiang
+localityName=Locality Name (eg, city)
+localityName_default=HangZhou
+organizationalUnitName=Organizational Unit Name (eg, section)
+organizationalUnitName_default=${ip}
+commonName=Internet Widgits Ltd
+commonName_default=${ip}
+commonName_max=64
+
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = ${ip}
+# section for the "default_ca" option
+[ca]
+default_ca=my_ca_default
+
+# default section for "ca" command options
+[my_ca_default]
+new_certs_dir=./CA/certs
+database=./CA/certs.db
+default_md = sha256
+policy=my_ca_policy
+serial        = ./CA/serial
+default_days  = 365
+
+# section for DN field validation and order
+[my_ca_policy]
+commonName             = ${ip}
+countryName            = CN
+stateOrProvinceName    = ZheJiang
+localityName           = HZ
+organizationName       = NE
+organizationalUnitName = Music
+emailAddress           = app@163.com
