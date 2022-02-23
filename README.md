@@ -47,49 +47,9 @@
 
 项目使用 JAVA 开发，需要 JDK 1.8 运行环境，数据库使用的是 Mysql，需要安装 Mysql。JDK 安装直接找网上教程。
 
-##### 数据库
-
->  Mac 下安装 MySQL
-
-```shell
-brew install mysql
-# 后台运行 mysql
-mysqld &
-# 登录 mysql
-mysql -u root -p
-```
-
-> 建库
-
-```shell
-# 创建库
-drop database if exists app_manager;
-drop user if exists 'app_manager'@'localhost';
--- 支持emoji：需要mysql数据库参数： character_set_server=utf8mb4
-create database app_manager default character set utf8mb4 collate utf8mb4_unicode_ci;
-use app_manager;
-create user 'app_manager'@'localhost' identified by 'app_manager123456';
-grant all privileges on app_manager.* to 'app_manager'@'localhost';
-flush privileges;
-```
-
 ##### HTTPS 证书
 
 参考 [Spring Boot Https 证书](Spring_Boot_Https_证书.md) 创建证书，本项目使用的是 `pckcs12`，密码使用的是 `123456`，部署项目时证书需要自己创建。
-
-##### 配置
-
- [下载](https://share.weiyun.com/5zRBCtF)，解压包。
-
-> 配置 HTTPS
-
-将上一步生成的 ca.crt 放入 `/static/crt/` 目录中，替换掉里面的 ca.crt，将上一步生成的 `server.pckcs12` 文件替换掉包中的原有文件。
-
-如果生成的证书密码不是 `123456`，需要修改`/config/application.properties` 中的 `server.ssl.key-store-password`字段的值为自已设定的密码
-
-> 修改域名
-
-使用文本编辑器打开 `/config/application.properties`，将 `server.domain`字段修改为部署服务器的 IP 或域名。
 
 #### 部署
 
@@ -98,7 +58,12 @@ flush privileges;
 > 启动服务
 
 ```shell
-java -jar intranet_app_manager-1.0.0.jar
+git clone https://github.com/yizhaorong/intranet_app_manager.git
+cd intranet_app_manager
+#docker方式启动
+sh deploy.sh docker
+#直接在终端启动(仅实现了Mac端，其它端未试)
+sh deploy.sh
 ```
 
 服务启动后即可输入你的 IP 或域名来访问。
