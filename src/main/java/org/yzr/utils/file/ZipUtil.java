@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -24,7 +25,10 @@ public class ZipUtil {
                     File dir = new File(dirPath);
                     dir.mkdirs();
                 } else {
-                    File targetFile = new File(destDirPath + File.separator + entry.getName());
+                    File targetFile = new File(destDirPath, entry.getName());
+                    if (!targetFile.toPath().normalize().startsWith(destDirPath)) {
+                        throw new IOException("Bad zip entry");
+                    }
                     if (!targetFile.getParentFile().exists()) {
                         targetFile.getParentFile().mkdirs();
                     }
